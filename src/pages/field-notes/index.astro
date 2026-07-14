@@ -1,0 +1,223 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const notesRaw = (await getCollection('notes'))
+  .sort((a, b) => b.data.date.localeCompare(a.data.date));
+
+const withContent = await Promise.all(
+  notesRaw.map(async (n) => {
+    const { Content } = await n.render();
+    return { entry: n, Content };
+  })
+);
+
+function monthLabel(date: string): string {
+  const d = new Date(date);
+  const month = d.toLocaleString('en-US', { month: 'long' }).toUpperCase();
+  return `${month} ${d.getFullYear()}`;
+}
+
+// Preserve insertion order (already sorted desc)
+const groupsMap = new Map<string, typeof withContent>();
+for (const item of withContent) {
+  const label = monthLabel(item.entry.data.date);
+  if (!groupsMap.has(label)) groupsMap.set(label, []);
+  groupsMap.get(label)!.push(item);
+}
+const groups = Array.from(groupsMap.entries()).map(([label, items]) => ({
+  label,
+  count: `${items.length} ${items.length === 1 ? 'entry' : 'entries'}`,
+  items
+}));
+
+const TAGS = ['ALL', 'THM', 'LAB', 'LEARNING', 'MILESTONE'];
+
+// Oldest entry (list is sorted desc) — keeps the archive tail line accurate automatically.
+const logStart = notesRaw.length > 0 ? notesRaw[notesRaw.length - 1].data.date : null;
+---
+<BaseLayout title="Field Notes — dfir.89deg.com">
+
+  <section class="page-head container">
+    <p class="kicker">// FIELD NOTES — FULL LAB LOG</p>
+    <h1>Committing what matters, merging what sticks.</h1>
+    <p class="lede">Short entries, pushed the same day. No squash, no rebase — dead ends stay in the history, that’s where the learning is.</p>
+  </section>
+
+  {notesRaw.length > 0 && (
+    <section class="container filter-section" data-filter-root>
+      <div class="filter-bar">
+        <span class="label">FILTER:</span>
+        {TAGS.map(tag => (
+          <button
+            type="button"
+            class="filter-chip"
+            data-filter-tag={tag}
+            aria-pressed={tag === 'ALL' ? 'true' : 'false'}
+          >{tag}</button>
+        ))}
+        <span class="count" data-filter-count>{notesRaw.length} of {notesRaw.length} entries</span>
+      </div>
+    </section>
+  )}
+
+  <section class="container log-section">
+    {notesRaw.length === 0 ? (
+      <div class="empty-state">
+        <p class="empty-line">&gt; log not started yet · first entry lands soon_</p>
+      </div>
+    ) : (
+      <>
+        {groups.map(g => (
+          <div class="month-group" data-month>
+            <div class="month-head">
+              <h2>{g.label}</h2>
+              <span class="filler"></span>
+              <span class="month-count" data-month-count data-month-total={g.items.length}>{g.count}</span>
+            </div>
+            <div>
+              {g.items.map(({ entry, Content }) => (
+                <div class="note-row" data-tag={entry.data.tag}>
+                  <span class="note-date">{entry.data.date}</span>
+                  <div class="note-text"><Content /></div>
+                  <span class="note-chip">{entry.data.tag}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+        <p class="tail">&gt; log started {logStart} · end of archive_</p>
+      </>
+    )}
+  </section>
+
+</BaseLayout>
+
+<style>
+  .page-head { padding-top: 72px; }
+  h1 {
+    margin: 0;
+    font-size: clamp(34px, 7.5vw, 56px);
+    line-height: 1.08;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    max-width: 20ch;
+    text-wrap: balance;
+  }
+  .lede {
+    margin: 22px 0 0 0;
+    font-size: 20px;
+    line-height: 1.55;
+    color: var(--dim);
+    font-style: italic;
+    max-width: 58ch;
+    text-wrap: pretty;
+  }
+  .filter-section { padding-top: 40px; }
+  .log-section { padding-top: 28px; padding-bottom: 84px; }
+  .empty-state {
+    border-top: 1px solid var(--ink);
+    padding-top: 40px;
+    margin-top: 40px;
+  }
+  .empty-line {
+    margin: 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--faint);
+  }
+  .month-group { padding-top: 34px; }
+  .month-head {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+  }
+  .month-head h2 {
+    margin: 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--ink);
+  }
+  .filler { flex: 1; border-bottom: 1px solid var(--hairline); }
+  .month-count {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    color: var(--faint);
+  }
+  .note-row {
+    display: grid;
+    grid-template-columns: 150px 1fr auto;
+    gap: 28px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--hairline2);
+    align-items: baseline;
+  }
+  .note-date {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+  }
+  .note-text :global(p) {
+    margin: 0;
+    font-size: 17.5px;
+    line-height: 1.6;
+    color: var(--body);
+    max-width: 68ch;
+    text-wrap: pretty;
+  }
+  .note-chip {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    border: 1px solid var(--hairline);
+    padding: 3px 8px;
+    white-space: nowrap;
+  }
+  .tail {
+    margin: 28px 0 0 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--faint);
+  }
+  @media (max-width: 760px) {
+    .note-row { grid-template-columns: 1fr; gap: 8px; }
+  }
+</style>
+
+<script>
+  const root = document.querySelector('[data-filter-root]');
+  const countEl = document.querySelector('[data-filter-count]');
+  const chips = root?.querySelectorAll<HTMLButtonElement>('[data-filter-tag]') ?? [];
+  const rows = Array.from(document.querySelectorAll<HTMLElement>('.note-row'));
+  const months = Array.from(document.querySelectorAll<HTMLElement>('.month-group'));
+  const total = rows.length;
+
+  function applyFilter(tag: string) {
+    let visible = 0;
+    for (const row of rows) {
+      const show = tag === 'ALL' || row.dataset.tag === tag;
+      row.style.display = show ? '' : 'none';
+      if (show) visible++;
+    }
+    for (const m of months) {
+      const monthRows = Array.from(m.querySelectorAll<HTMLElement>('.note-row'));
+      const monthVisible = monthRows.filter(r => r.style.display !== 'none').length;
+      m.style.display = monthVisible === 0 ? 'none' : '';
+      const monthCountEl = m.querySelector<HTMLElement>('[data-month-count]');
+      if (monthCountEl) {
+        monthCountEl.textContent = `${monthVisible} ${monthVisible === 1 ? 'entry' : 'entries'}`;
+      }
+    }
+    if (countEl) countEl.textContent = `${visible} of ${total} entries`;
+    for (const chip of chips) {
+      chip.setAttribute('aria-pressed', chip.dataset.filterTag === tag ? 'true' : 'false');
+    }
+  }
+
+  for (const chip of chips) {
+    chip.addEventListener('click', () => applyFilter(chip.dataset.filterTag!));
+  }
+</script>

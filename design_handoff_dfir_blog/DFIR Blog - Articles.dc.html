@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    html, body { margin: 0; padding: 0; background: var(--bg); }
+    ::selection { background: var(--shadow); }
+    :root { color-scheme: light; --bg: #FBFBF9; --ink: #161B18; --body: #2B322E; --dim: #454C48; --muted: #6B7370; --faint: #8A928D; --hairline: #E4E6E2; --hairline2: #ECEEE9; --soft: #F5F6F2; --hover: #F4F6F2; --card: #FFFFFF; --shadow: #DCEEE2; --accent: #0E7A4A; --accent-bd: #C4DFCE; --sep: #D3D8D2; --offcell: #C5CBC5; --panel-dark: #161B18; }
+    html[data-theme="dark"] { color-scheme: dark; --bg: #101413; --ink: #E4E9E5; --body: #C6CEC8; --dim: #A9B3AC; --muted: #8D978F; --faint: #707A73; --hairline: #262D29; --hairline2: #212724; --soft: #161B18; --hover: #1A201C; --card: #141917; --shadow: #14291E; --accent: #45A97A; --accent-bd: #2C4A3A; --sep: #343C37; --offcell: #3B443E; --panel-dark: #0B0F0D; }
+    @media (max-width: 760px) {
+      [data-screen-label] { padding-left: 20px !important; padding-right: 20px !important; }
+      [data-mq~="pad"] { padding-left: 20px !important; padding-right: 20px !important; }
+      [data-mq~="stack"] { grid-template-columns: 1fr !important; gap: 14px !important; }
+      [data-mq~="stack"] > * { text-align: left !important; }
+      [data-mq~="static"] { position: static !important; }
+      [data-mq~="nav"] { gap: 14px 18px !important; }
+      [data-mq~="row"] { flex-direction: row !important; gap: 12px !important; }
+    }
+  </style>
+  <script src="theme.js"></script>
+</helmet>
+
+<div style="min-height: 100vh; background: var(--bg); color: var(--ink); font-family: 'Newsreader', Georgia, serif; -webkit-font-smoothing: antialiased;">
+
+  <!-- ============ HEADER ============ -->
+  <header data-screen-label="Header" style="border-bottom: 1px solid var(--hairline);">
+    <div data-mq="pad" style="max-width: 1060px; margin: 0 auto; padding: 22px 32px; display: flex; align-items: baseline; justify-content: space-between; gap: 24px; flex-wrap: wrap;">
+      <div style="display: flex; align-items: baseline; gap: 14px;">
+        <a href="DFIR Blog - Home.dc.html" style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; letter-spacing: 0.04em; color: var(--ink); text-decoration: none;">NILS HILLMANN</a>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--faint);">dfir.89deg.com</span>
+      </div>
+      <nav data-mq="nav" style="display: flex; gap: 26px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.08em;">
+        <a href="DFIR Blog - Articles.dc.html" style="color: var(--accent); text-decoration: none;">ARTICLES</a>
+        <a href="DFIR Blog - Field Notes.dc.html" style="color: var(--ink); text-decoration: none;" style-hover="color: var(--accent);">FIELD NOTES</a>
+        <a href="DFIR Blog - Toolbox.dc.html" style="color: var(--ink); text-decoration: none;" style-hover="color: var(--accent);">TOOLBOX</a>
+        <a href="DFIR Blog - About.dc.html" style="color: var(--ink); text-decoration: none;" style-hover="color: var(--accent);">CONTACT</a>
+        <button data-theme-toggle="true" title="Toggle dark mode" style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 1; border: 1px solid var(--sep); background: transparent; color: var(--muted); padding: 4px 9px; cursor: pointer;" style-hover="border-color: var(--accent); color: var(--accent);">&#9680;</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ============ PAGE HEADER ============ -->
+  <section data-screen-label="Articles header" style="max-width: 1060px; margin: 0 auto; padding: 72px 32px 0 32px;">
+    <p style="margin: 0 0 20px 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.08em; color: var(--accent);">// ARTICLES — ALL WRITE-UPS</p>
+    <h1 style="margin: 0; font-size: clamp(34px, 7.5vw, 56px); line-height: 1.08; font-weight: 500; letter-spacing: -0.015em; max-width: 20ch; text-wrap: balance;">Deep dives, from first principles.</h1>
+    <p style="margin: 22px 0 0 0; font-size: 20px; line-height: 1.55; color: var(--dim); font-style: italic; max-width: 58ch; text-wrap: pretty;">The rule for every piece: if I can&rsquo;t explain the <em>why</em> without hand-waving, it&rsquo;s not done. Includes the weekly protocol write-ups.</p>
+  </section>
+
+  <!-- ============ FILTER ============ -->
+  <section data-screen-label="Filter" style="max-width: 1060px; margin: 0 auto; padding: 40px 32px 0 32px;">
+    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; border-top: 1px solid var(--ink); padding-top: 20px;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: var(--faint); margin-right: 6px;">FILTER:</span>
+      <sc-for list="{{ tags }}" as="tg" hint-placeholder-count="5">
+        <button onClick="{{ tg.pick }}" style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.05em; padding: 6px 12px; border: 1px solid {{ tg.border }}; background: {{ tg.bg }}; color: {{ tg.col }}; cursor: pointer;" style-hover="border-color: var(--accent);">{{ tg.label }}</button>
+      </sc-for>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--faint); margin-left: auto;">{{ countLine }}</span>
+    </div>
+  </section>
+
+  <!-- ============ LIST ============ -->
+  <section data-screen-label="Article list" style="max-width: 1060px; margin: 0 auto; padding: 12px 32px 84px 32px;">
+    <div style="display: flex; flex-direction: column;">
+      <sc-for list="{{ articles }}" as="a" hint-placeholder-count="6">
+        <a href="{{ a.href }}" data-mq="stack" style="display: grid; grid-template-columns: 150px 1fr auto; gap: 28px; align-items: baseline; padding: 26px 0; border-bottom: 1px solid var(--hairline); text-decoration: none; color: inherit;" style-hover="background: var(--hover);">
+          <span data-mq="row" style="display: flex; flex-direction: column; gap: 5px;">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--muted);">{{ a.date }}</span>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--faint);">{{ a.mins }}</span>
+          </span>
+          <span style="min-width: 0;">
+            <span style="display: block; font-size: 25px; font-weight: 500; line-height: 1.25; color: {{ a.titleCol }};">{{ a.title }}</span>
+            <span style="display: block; margin-top: 6px; font-size: 16.5px; line-height: 1.5; color: var(--muted); font-style: italic;">{{ a.dek }}</span>
+          </span>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: {{ a.tagCol }}; border: 1px solid {{ a.tagBorder }}; padding: 4px 9px; white-space: nowrap;">{{ a.tag }}</span>
+        </a>
+      </sc-for>
+    </div>
+    <p style="margin: 28px 0 0 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--faint);">&gt; one deep dive at a time &middot; protocol of the week ships every monday_</p>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer data-screen-label="Footer" style="border-top: 1px solid var(--ink); background: var(--panel-dark); color: #E8EBE8;">
+    <div data-mq="pad" style="max-width: 1060px; margin: 0 auto; padding: 18px 32px; display: flex; flex-wrap: wrap; gap: 6px 16px; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--muted);">
+      <span>&copy; 2026 Nils Hillmann &middot; dfir.89deg.com</span>
+      <span>built by hand &middot; no trackers</span>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  state = { activeTag: 'ALL' };
+
+  renderVals() {
+    const ALL = [
+      { date: '2026-07-02', mins: 'IN PROGRESS', title: 'DNS: the tree, the cache, and the tunnel', dek: 'Protocol of the week. How a resolver walks the tree, why TXT records are a tunneling playground, and what exfil looks like in a pcap.', tag: 'NETWORK', href: '#', draft: true },
+      { date: '2026-06-24', mins: '14 MIN', title: 'What is RSA, actually?', dek: 'Public-key crypto from first principles: primes, Euler\u2019s theorem, and why factoring is the whole point.', tag: 'CRYPTO', href: '#' },
+      { date: '2026-06-15', mins: '8 MIN', title: 'ARP: the protocol that trusts everyone', dek: 'Protocol of the week. I poisoned my own cache in a lab and watched in Wireshark \u2014 uncomfortable how quiet it is.', tag: 'NETWORK', href: '#' },
+      { date: '2026-06-12', mins: '16 MIN', title: 'The math behind Diffie\u2013Hellman', dek: 'How two strangers agree on a secret in plain sight \u2014 and what discrete logarithms have to do with it.', tag: 'CRYPTO', href: '#' },
+      { date: '2026-06-03', mins: '10 MIN', title: 'Timestomping: when NTFS keeps two diaries', dek: '$STANDARD_INFORMATION says one thing, $FILE_NAME says another. Whoever edits only one of them leaves a confession.', tag: 'DISK', href: '#' },
+      { date: '2026-05-30', mins: '9 MIN', title: 'Finding the host: DHCP in Wireshark', dek: 'Four packets tell you the hostname, the MAC and the OS \u2014 more than the IP ever will.', tag: 'NETWORK', href: 'DFIR Blog - Article.dc.html' },
+      { date: '2026-05-22', mins: '7 MIN', title: 'ALEAPP missed an artifact. Here\u2019s how I found it', dek: 'Auditing a parser against manual SQLite queries on the same Android image \u2014 and what I sent upstream.', tag: 'MOBILE', href: '#' },
+      { date: '2026-05-09', mins: '11 MIN', title: 'DNS over HTTPS: what defenders lose', dek: 'Protocol of the week. Great for privacy, miserable for monitoring \u2014 what disappears from the wire and what\u2019s left to work with.', tag: 'NETWORK', href: '#' },
+      { date: '2026-04-18', mins: '9 MIN', title: 'Hashing: why we image twice', dek: 'MD5, SHA-256 and chain of custody \u2014 what a hash actually proves in court, and what it doesn\u2019t.', tag: 'CRYPTO', href: '#' }
+    ];
+
+    const TAGS = ['ALL', 'NETWORK', 'CRYPTO', 'DISK', 'MOBILE'];
+    const active = this.state.activeTag;
+    const filtered = ALL.filter((a) => active === 'ALL' || a.tag === active);
+
+    const articles = filtered.map((a) => ({
+      ...a,
+      titleCol: a.draft ? 'var(--faint)' : 'var(--ink)',
+      tag: a.draft ? 'DRAFT \u00b7 ' + a.tag : a.tag,
+      tagCol: a.draft ? 'var(--faint)' : 'var(--accent)',
+      tagBorder: a.draft ? 'var(--sep)' : 'var(--accent-bd)'
+    }));
+
+    const tags = TAGS.map((label) => {
+      const on = label === active;
+      return {
+        label,
+        col: on ? '#F2F8F4' : 'var(--dim)',
+        bg: on ? 'var(--accent)' : 'transparent',
+        border: on ? 'var(--accent)' : 'var(--sep)',
+        pick: () => this.setState({ activeTag: label })
+      };
+    });
+
+    return {
+      articles,
+      tags,
+      countLine: filtered.length + ' of ' + ALL.length + ' write-ups'
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,454 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProficiencyBytes from '../components/ProficiencyBytes.astro';
+
+const articlesAll = (await getCollection('articles'))
+  .filter((a) => !a.data.draft)
+  .sort((a, b) => b.data.date.localeCompare(a.data.date));
+const articles = articlesAll.slice(0, 3);
+
+const notesRaw = (await getCollection('notes'))
+  .sort((a, b) => b.data.date.localeCompare(a.data.date))
+  .slice(0, 3);
+const notes = await Promise.all(
+  notesRaw.map(async (n) => ({ entry: n, Content: (await n.render()).Content }))
+);
+
+const toolsRaw = (await getCollection('tools'))
+  .sort((a, b) => a.data.order - b.data.order);
+
+function evidenceLine(challenges: { platform: string }[]): string {
+  const counts: Record<string, number> = {};
+  for (const c of challenges) counts[c.platform] = (counts[c.platform] ?? 0) + 1;
+  return Object.entries(counts).map(([p, n]) => `${n}× ${p}`).join(' · ');
+}
+
+const tools = toolsRaw.map(t => ({
+  ...t,
+  evidence: evidenceLine(t.data.challenges)
+}));
+
+const protocolsActive = (await getCollection('protocol')).find(p => p.data.active);
+
+function articleHref(slug: string) { return `/articles/${slug}`; }
+---
+<BaseLayout title="Nils Hillmann — DFIR portfolio">
+
+  <!-- HERO -->
+  <section class="hero container">
+    <p class="kicker">// DIGITAL FORENSICS &amp; INCIDENT RESPONSE — LEARNED IN PUBLIC</p>
+    <h1>Welcome to my forensic lab diary.</h1>
+    <p class="intro">Hi, I’m Nils — I’m working my way toward a job in DFIR. Watch me learn, break things, fail, and share what sticks along the way.</p>
+    <div class="status">
+      <span class="dot" aria-hidden="true"></span>
+      <span>STATUS: open for junior DFIR / SOC roles · last updated 2026-07-11</span>
+    </div>
+  </section>
+
+  <!-- PROTOCOL OF THE WEEK -->
+  {protocolsActive && (
+    <section class="container potw-section">
+      <div class="potw stack-mobile">
+        <div class="potw-side">
+          <span class="potw-label">PROTOCOL<br />OF THE WEEK</span>
+          <span class="potw-week">{protocolsActive.data.week}</span>
+        </div>
+        <div class="potw-body">
+          <div class="potw-title-row">
+            <h2>{protocolsActive.data.name}</h2>
+            <span class="potw-meta">{protocolsActive.data.meta}</span>
+          </div>
+          <p>{protocolsActive.data.blurb}</p>
+          <a class="potw-link" href={protocolsActive.data.link ?? '/articles'}>READ THE WRITE-UP →</a>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- ARTICLES -->
+  <section class="container articles-section">
+    <div class="section-head">
+      <h2>ARTICLES</h2>
+      <a href="/articles" class="meta">all write-ups →</a>
+    </div>
+    <div>
+      {articles.length === 0 ? (
+        <p class="empty">&gt; no write-ups yet · the first ones are on the way_</p>
+      ) : articles.map(a => (
+        <a href={articleHref(a.slug)} class="list-row">
+          <span class="date">{a.data.date}</span>
+          <span>
+            <span class="title">{a.data.title}</span>
+            <span class="dek">{a.data.dek}</span>
+          </span>
+          <span class="chip">{a.data.tag}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- FIELD NOTES -->
+  <section id="field-notes" class="field-notes-band">
+    <div class="container">
+      <div class="section-head">
+        <h2>FIELD NOTES</h2>
+        <span class="meta">lab log — what I’m actually doing</span>
+      </div>
+      <div>
+        {notes.length === 0 ? (
+          <p class="empty band-empty">&gt; log not started yet_</p>
+        ) : notes.map(({ entry, Content }) => (
+          <div class="note-row">
+            <span class="note-date">{entry.data.date}</span>
+            <div class="note-text"><Content /></div>
+          </div>
+        ))}
+      </div>
+      {notes.length > 0 && (
+        <a href="/field-notes" class="notes-more">&gt; full log continues in the archive_ →</a>
+      )}
+    </div>
+  </section>
+
+  <!-- TOOLBOX -->
+  <section id="toolbox" class="container toolbox-section">
+    <div class="section-head">
+      <h2>TOOLBOX</h2>
+      <span class="meta">proficiency written in bytes — FF = solid, 00 = not yet</span>
+    </div>
+    {tools.length === 0 && (
+      <p class="empty">&gt; toolbox is being assembled · no receipts posted yet_</p>
+    )}
+    <div class="tool-grid">
+      {tools.map(t => (
+        <div class="tool-card">
+          <div class="tool-row-top">
+            <div class="tool-name-wrap">
+              <span class="tool-icon" aria-hidden="true">{t.data.name.charAt(0).toUpperCase()}</span>
+              <a href={t.data.url} class="tool-name">{t.data.name}</a>
+            </div>
+            <span class="tool-score">{t.data.level}/10</span>
+          </div>
+          <p class="tool-desc">{t.data.desc}</p>
+          <ProficiencyBytes level={t.data.level} />
+          <div class="tool-row-bot">
+            <span>{t.evidence}</span>
+            <a href={t.data.url} class="tool-get">get it →</a>
+          </div>
+        </div>
+      ))}
+    </div>
+    {tools.length > 0 && (
+      <div class="toolbox-footnote">
+        <p>Scores are self-assessed and backed by the challenges listed — THM = TryHackMe, CD = CyberDefenders. I’d rather show a 4/10 with receipts than a 9/10 without.</p>
+        <a href="/toolbox">&gt; full toolbox with receipts →</a>
+      </div>
+    )}
+  </section>
+
+  <!-- CONTACT CTA -->
+  <section id="contact" class="cta-band">
+    <div class="container cta-inner">
+      <div class="cta-copy">
+        <h2>Hiring for a junior DFIR or SOC role? Let’s talk.</h2>
+        <p>Everything on this site is my own lab work — reproducible, dated, and honest about what I don’t know yet. Happy to walk you through any of it.</p>
+      </div>
+      <div class="cta-links">
+        <a href="mailto:dfir@89deg.com">dfir@89deg.com</a>
+        <a href="https://github.com/89deg">github.com/89deg</a>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  /* HERO */
+  .hero { padding-top: 84px; padding-bottom: 64px; }
+  h1 {
+    margin: 0;
+    font-size: clamp(36px, 8vw, 62px);
+    line-height: 1.06;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    max-width: 22ch;
+    text-wrap: balance;
+  }
+  .intro {
+    margin: 28px 0 0 0;
+    font-size: 21px;
+    line-height: 1.55;
+    color: var(--dim);
+    max-width: 58ch;
+    text-wrap: pretty;
+  }
+  .status {
+    margin-top: 36px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); display: inline-block; }
+
+  /* PROTOCOL */
+  .potw-section { padding-bottom: 72px; }
+  .potw {
+    border: 1px solid var(--ink);
+    background: var(--card);
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    box-shadow: 5px 5px 0 0 var(--shadow);
+  }
+  .potw-side {
+    background: var(--accent);
+    color: #F2F8F4;
+    padding: 26px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .potw-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    line-height: 1.6;
+  }
+  .potw-week {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    opacity: 0.75;
+  }
+  .potw-body { padding: 26px 30px 28px 30px; }
+  .potw-title-row { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+  .potw-title-row h2 { margin: 0; font-size: 32px; font-weight: 500; }
+  .potw-meta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .potw-body p {
+    margin: 12px 0 0 0;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--dim);
+    max-width: 62ch;
+    text-wrap: pretty;
+  }
+  .potw-link {
+    display: inline-block;
+    margin-top: 16px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent);
+    padding-bottom: 2px;
+  }
+  .potw-link:hover { color: var(--ink); border-bottom-color: var(--ink); }
+
+  @media (max-width: 760px) {
+    .potw { grid-template-columns: 1fr; }
+    .potw-side { flex-direction: row; align-items: center; }
+  }
+
+  /* ARTICLES */
+  .articles-section { padding-bottom: 84px; }
+  .empty {
+    margin: 32px 0 0 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--faint);
+  }
+  .band-empty { padding: 12px 0 0 0; }
+
+  /* FIELD NOTES */
+  .field-notes-band {
+    border-top: 1px solid var(--hairline);
+    background: var(--soft);
+    padding: 64px 0 72px 0;
+  }
+  .note-row {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 28px;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--hairline2);
+    align-items: baseline;
+  }
+  .note-date {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+  }
+  .note-text :global(p) {
+    margin: 0;
+    font-size: 17.5px;
+    line-height: 1.6;
+    color: var(--body);
+    max-width: 68ch;
+    text-wrap: pretty;
+  }
+  .notes-more {
+    display: inline-block;
+    margin-top: 20px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .notes-more:hover { color: var(--ink); }
+  @media (max-width: 760px) {
+    .note-row { grid-template-columns: 1fr; gap: 8px; }
+  }
+
+  /* TOOLBOX */
+  .toolbox-section { padding-top: 72px; padding-bottom: 84px; }
+  .tool-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 48px;
+  }
+  .tool-card {
+    padding: 28px 0;
+    border-bottom: 1px solid var(--hairline);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .tool-row-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .tool-name-wrap {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+  }
+  .tool-icon {
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--ink);
+    background: var(--card);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--accent);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .tool-name {
+    font-size: 23px;
+    font-weight: 500;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .tool-name:hover { color: var(--accent); }
+  .tool-score {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .tool-desc {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--muted);
+    font-style: italic;
+  }
+  .tool-row-bot {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+  .tool-get { color: var(--accent); text-decoration: none; white-space: nowrap; }
+  .tool-get:hover { text-decoration: underline; }
+  .toolbox-footnote {
+    margin-top: 22px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .toolbox-footnote p {
+    margin: 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--faint);
+    line-height: 1.7;
+    max-width: 60ch;
+  }
+  .toolbox-footnote a {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .toolbox-footnote a:hover { color: var(--ink); }
+  @media (max-width: 760px) {
+    .tool-grid { grid-template-columns: 1fr; }
+  }
+
+  /* CTA */
+  .cta-band {
+    border-top: 1px solid var(--ink);
+    background: var(--panel-dark);
+    color: #E8EBE8;
+  }
+  .cta-inner {
+    padding-top: 64px;
+    padding-bottom: 56px;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 48px;
+  }
+  .cta-copy h2 {
+    margin: 0;
+    font-size: 34px;
+    font-weight: 500;
+    line-height: 1.2;
+    max-width: 20ch;
+    text-wrap: balance;
+  }
+  .cta-copy p {
+    margin: 18px 0 0 0;
+    font-size: 17px;
+    line-height: 1.6;
+    color: #9BA59E;
+    max-width: 52ch;
+    text-wrap: pretty;
+  }
+  .cta-links {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    justify-content: flex-start;
+    padding-top: 8px;
+  }
+  .cta-links a { color: #7FC79F; text-decoration: none; }
+  .cta-links a:hover { color: #FFFFFF; }
+  @media (max-width: 760px) {
+    .cta-inner { grid-template-columns: 1fr; gap: 24px; }
+  }
+</style>

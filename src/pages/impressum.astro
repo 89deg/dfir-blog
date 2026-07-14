@@ -1,0 +1,114 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Imprint — Nils Hillmann · dfir.89deg.com">
+
+  <section class="imprint container">
+    <p class="kicker">// IMPRINT — INFORMATION PURSUANT TO § 5 TMG</p>
+    <h1>Imprint</h1>
+
+    <div class="rows">
+      <div class="row">
+        <span class="label">PROVIDER</span>
+        <div class="value">
+          <p>Nils Hillmann 89deg</p>
+          <p>Owner: Nils Hillmann</p>
+          <p>Rabienstr. 63</p>
+          <p>27726 Worpswede, Germany</p>
+        </div>
+      </div>
+
+      <div class="row">
+        <span class="label">CONTACT</span>
+        <div class="value">
+          <p>Phone: <a href="tel:+4915229536729">+49 152 29536729</a></p>
+          <p>Email: <a href="mailto:dfir@89deg.com">dfir@89deg.com</a></p>
+        </div>
+      </div>
+
+      <div class="row">
+        <span class="label">VAT ID</span>
+        <div class="value">
+          <p>VAT identification number pursuant to § 27 a of the German VAT Act (Umsatzsteuergesetz): DE462430091</p>
+        </div>
+      </div>
+
+      <div class="row">
+        <span class="label">TRADE LICENCE</span>
+        <div class="value">
+          <p>The trade licence under the German Trade Regulation Act (Gewerbeordnung, GewO) was issued on 1 April 2026 by: Ordnungsamt – Gemeinde Worpswede (municipal regulatory office).</p>
+        </div>
+      </div>
+
+      <div class="row">
+        <span class="label">CONSUMER DISPUTE RESOLUTION</span>
+        <div class="value">
+          <p>We are neither willing nor obliged to participate in dispute resolution proceedings before a consumer arbitration board.</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="source">Source: <a href="https://www.e-recht24.de/impressum-generator.html" rel="nofollow noopener" target="_blank">e-recht24.de/impressum-generator.html</a></p>
+  </section>
+
+</BaseLayout>
+
+<style>
+  .imprint {
+    padding-top: 72px;
+    padding-bottom: 84px;
+  }
+  h1 {
+    margin: 0;
+    font-size: clamp(34px, 7.5vw, 56px);
+    line-height: 1.08;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+  }
+  .rows {
+    margin-top: 40px;
+    max-width: 760px;
+    border-top: 1px solid var(--ink);
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 32px;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    color: var(--faint);
+    padding-top: 4px;
+  }
+  .value p {
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--body);
+    text-wrap: pretty;
+  }
+  .value p + p { margin-top: 2px; }
+  .value a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent-bd);
+  }
+  .value a:hover { border-bottom-color: var(--accent); }
+  .source {
+    margin: 28px 0 0 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    color: var(--faint);
+  }
+  .source a { color: var(--muted); text-decoration: none; border-bottom: 1px solid var(--hairline); }
+  .source a:hover { color: var(--ink); }
+
+  @media (max-width: 640px) {
+    .row { grid-template-columns: 1fr; gap: 8px; }
+    .label { padding-top: 0; }
+  }
+</style>

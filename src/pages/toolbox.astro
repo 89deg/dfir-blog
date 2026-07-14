@@ -1,0 +1,438 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProficiencyBytes from '../components/ProficiencyBytes.astro';
+
+const tools = (await getCollection('tools'))
+  .sort((a, b) => b.data.level - a.data.level);
+
+const radar = (await getCollection('radar'))
+  .sort((a, b) => a.data.order - b.data.order);
+
+type DomainId = 'android' | 'windows' | 'network' | 'memory';
+
+const DOMAINS: { id: DomainId; label: string; blurb: string }[] = [
+  { id: 'android', label: 'ANDROID', blurb: 'app data, artifacts, extractions' },
+  { id: 'windows', label: 'WINDOWS', blurb: 'disk, registry, endpoint triage' },
+  { id: 'network', label: 'NETWORK', blurb: 'pcaps, protocols, traffic analysis' },
+  { id: 'memory',  label: 'MEMORY',  blurb: 'RAM captures, volatile evidence' }
+];
+
+const domainSections = DOMAINS.map((d, i) => {
+  const dTools = tools.filter(t => t.data.domains.includes(d.id));
+  const avg = dTools.length ? dTools.reduce((s, t) => s + t.data.level, 0) / dTools.length : 0;
+  const agg = Math.round(avg * 10) / 10;
+  return {
+    ...d,
+    num: '0' + (i + 1),
+    tools: dTools,
+    avgLevel: Math.round(avg),
+    aggScore: agg.toFixed(1).replace(/\.0$/, ''),
+    formula: 'avg of ' + dTools.length + (dTools.length === 1 ? ' tool' : ' tools')
+  };
+}).filter(s => s.tools.length > 0);
+
+const FILTERS = [
+  { id: 'all', label: 'ALL' },
+  ...DOMAINS.map(d => ({ id: d.id, label: d.label }))
+];
+
+const domainLabel: Record<DomainId, string> = Object.fromEntries(
+  DOMAINS.map(d => [d.id, d.label])
+) as Record<DomainId, string>;
+---
+<BaseLayout title="Toolbox — dfir.89deg.com">
+
+  <section class="page-head container">
+    <p class="kicker">// TOOLBOX — BY DOMAIN</p>
+    <h1>Screwdrivers, flux capacitors &amp; other precision instruments.</h1>
+    <p class="lede">The workbench, sorted by what I investigate — not just what I run. Each domain gets a score computed from its tools, and every score still comes with a receipt.</p>
+    <div class="legend">
+      <span><span class="lg on">FF</span> = solid</span>
+      <span><span class="lg off">00</span> = not yet</span>
+      <span>THM = TryHackMe</span>
+      <span>CD = CyberDefenders</span>
+      <span class="legend-tail">domain score = avg of its tools</span>
+    </div>
+  </section>
+
+  {tools.length > 0 && (
+    <section class="container filter-section" data-filter-root>
+      <div class="filter-bar">
+        <span class="label">FILTER:</span>
+        {FILTERS.map(f => (
+          <button
+            type="button"
+            class="filter-chip"
+            data-filter-tag={f.id}
+            aria-pressed={f.id === 'all' ? 'true' : 'false'}
+          >{f.label}</button>
+        ))}
+        <span class="count" data-filter-count data-total={tools.length}>{tools.length} of {tools.length} tools</span>
+      </div>
+    </section>
+  )}
+
+  <section class="container domains">
+    {domainSections.length === 0 && (
+      <div class="empty-state">
+        <p class="empty-line">&gt; inventory is being written up · first tools land soon_</p>
+      </div>
+    )}
+    {domainSections.map(sec => (
+      <div class="domain" data-domain={sec.id}>
+        <div class="dom-head">
+          <div class="dom-title">
+            <span class="dom-num">{sec.num}</span>
+            <h2>{sec.label} FORENSICS</h2>
+            <span class="dom-blurb">{sec.blurb}</span>
+          </div>
+          <div class="dom-score">
+            <span class="score-label">DOMAIN SKILL</span>
+            <ProficiencyBytes level={sec.avgLevel} gap="6px" />
+            <span class="score-num">{sec.aggScore}/10</span>
+            <span class="score-formula">{sec.formula}</span>
+          </div>
+        </div>
+        {sec.tools.map(t => (
+          <div class="tool-row" data-domains={t.data.domains.join(' ')}>
+            <div class="tool-info">
+              <a href={t.data.url} class="tool-name">{t.data.name}</a>
+              <p class="tool-desc">{t.data.desc}</p>
+              <a href={t.data.url} class="tool-link" target="_blank" rel="noopener">{t.data.linkLabel} →</a>
+              <div class="tool-tags">
+                {t.data.domains.map(d => (
+                  <button type="button" class="tag" data-goto={d} title="Show this domain">{domainLabel[d as DomainId]}</button>
+                ))}
+              </div>
+            </div>
+            <div class="tool-score">
+              <span class="score-num">{t.data.level}/10</span>
+              <ProficiencyBytes level={t.data.level} />
+              <span class="score-verdict">{t.data.verdict}</span>
+            </div>
+            <div class="tool-receipts">
+              <span class="receipts-label">RECEIPTS</span>
+              {t.data.challenges.length === 0 && (
+                <span class="receipts-empty">— no receipts filed yet</span>
+              )}
+              {t.data.challenges.map(ch => (
+                <div class="receipt">
+                  <span class="check">✓</span>
+                  {ch.url ? (
+                    <a class="ch-name" href={ch.url} target="_blank" rel="noopener">{ch.name}</a>
+                  ) : (
+                    <span class="ch-name">{ch.name}</span>
+                  )}
+                  <span class="ch-meta">{ch.platform} · {ch.date}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    ))}
+  </section>
+
+  {radar.length > 0 && (
+    <section class="container radar-section">
+      <div class="section-head">
+        <h2>ON THE RADAR</h2>
+        <span class="meta">not started — still 00 00 00, and I know it</span>
+      </div>
+      <div class="radar-grid">
+        {radar.map(r => (
+          <div class="radar-chip">
+            <span class="rn">{r.data.name}</span>
+            <span class="rw">{r.data.why}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  )}
+
+</BaseLayout>
+
+<script>
+  const chips = document.querySelectorAll<HTMLButtonElement>('.filter-chip[data-filter-tag]');
+  const domains = document.querySelectorAll<HTMLElement>('.domain');
+  const countEl = document.querySelector<HTMLElement>('[data-filter-count]');
+  const total = Number(countEl?.dataset.total ?? 0);
+
+  function activate(id: string) {
+    chips.forEach(c => {
+      c.setAttribute('aria-pressed', c.dataset.filterTag === id ? 'true' : 'false');
+    });
+    // a tool can render in several domains — in "all" count unique tools, not rows
+    let visible = 0;
+    domains.forEach(d => {
+      const show = id === 'all' || d.dataset.domain === id;
+      d.hidden = !show;
+      if (show && id !== 'all') visible += d.querySelectorAll('.tool-row').length;
+    });
+    if (id === 'all') visible = total;
+    if (countEl) countEl.textContent = `${visible} of ${total} tools`;
+  }
+
+  chips.forEach(c => c.addEventListener('click', () => activate(c.dataset.filterTag || 'all')));
+  document.querySelectorAll<HTMLButtonElement>('.tag[data-goto]').forEach(tag => {
+    tag.addEventListener('click', () => {
+      activate(tag.dataset.goto || 'all');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+</script>
+
+<style>
+  .page-head { padding-top: 72px; }
+  h1 {
+    margin: 0;
+    font-size: clamp(34px, 7.5vw, 56px);
+    line-height: 1.08;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    max-width: 20ch;
+    text-wrap: balance;
+  }
+  .lede {
+    margin: 22px 0 0 0;
+    font-size: 20px;
+    line-height: 1.55;
+    color: var(--dim);
+    font-style: italic;
+    max-width: 58ch;
+    text-wrap: pretty;
+  }
+  .legend {
+    margin-top: 36px;
+    border: 1px solid var(--hairline);
+    background: var(--soft);
+    padding: 16px 22px;
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .lg { font-weight: 600; }
+  .lg.on { color: var(--accent); }
+  .lg.off { color: var(--offcell); }
+  .legend-tail { margin-left: auto; }
+
+  .filter-section { padding-top: 40px; }
+
+  /* first sub-heading lands 62px below the filter bar, same rhythm as field-notes (28+34) */
+  .domains { padding-top: 14px; padding-bottom: 0; }
+  .empty-state {
+    border-top: 1px solid var(--ink);
+    padding-top: 40px;
+    margin-top: 24px;
+  }
+  .empty-line {
+    margin: 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--faint);
+  }
+  .domain { padding-top: 48px; }
+  .dom-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 16px 40px;
+    align-items: end;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 12px;
+  }
+  .dom-title {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .dom-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .dom-title h2 {
+    margin: 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+  }
+  .dom-blurb {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--faint);
+  }
+  .dom-score {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    flex-wrap: wrap;
+  }
+  .dom-score .score-label {
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    color: var(--faint);
+  }
+  .dom-score .score-num {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .dom-score .score-formula {
+    font-size: 10.5px;
+    color: var(--faint);
+  }
+
+  .tool-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) 220px minmax(0, 1fr);
+    gap: 40px;
+    padding: 30px 0;
+    border-bottom: 1px solid var(--hairline2);
+    align-items: start;
+  }
+  .tool-info { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .tool-name {
+    font-size: 26px;
+    font-weight: 500;
+    color: var(--ink);
+    text-decoration: none;
+    line-height: 1.2;
+  }
+  .tool-name:hover { color: var(--accent); }
+  .tool-desc {
+    margin: 0;
+    font-size: 16.5px;
+    line-height: 1.55;
+    color: var(--dim);
+    text-wrap: pretty;
+  }
+  .tool-link {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    color: var(--accent);
+    text-decoration: none;
+    margin-top: 2px;
+  }
+  .tool-link:hover { text-decoration: underline; }
+  .tool-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+  }
+  .tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    background: var(--soft);
+    border: 1px solid var(--hairline);
+    padding: 3px 8px;
+    cursor: pointer;
+  }
+  .tag:hover {
+    color: var(--accent);
+    border-color: var(--accent-bd);
+  }
+
+  .tool-score { display: flex; flex-direction: column; gap: 10px; padding-top: 6px; }
+  .tool-score .score-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .score-verdict {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--faint);
+  }
+
+  .tool-receipts {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-top: 6px;
+  }
+  .receipts-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    color: var(--faint);
+    padding-bottom: 8px;
+  }
+  .receipts-empty {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--faint);
+  }
+  .receipt {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    padding: 5px 0;
+    border-bottom: 1px dotted var(--hairline);
+  }
+  .check { color: var(--accent); }
+  .ch-name { color: var(--body); text-decoration: none; }
+  a.ch-name:hover { color: var(--accent); }
+  .ch-meta { margin-left: auto; color: var(--faint); white-space: nowrap; }
+
+  .radar-section { padding-top: 64px; padding-bottom: 84px; }
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 12px;
+  }
+  .section-head h2 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: 0.1em;
+  }
+  .section-head .meta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--faint);
+  }
+  .radar-grid {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    padding-top: 22px;
+  }
+  .radar-chip {
+    border: 1px solid var(--hairline);
+    background: var(--card);
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .rn { font-size: 18px; font-weight: 500; }
+  .rw {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--faint);
+  }
+
+  @media (max-width: 760px) {
+    .tool-row { grid-template-columns: 1fr; gap: 24px; }
+    .dom-head { grid-template-columns: 1fr; gap: 14px; }
+    .legend { flex-direction: column; gap: 8px; }
+    .legend-tail { margin-left: 0; }
+  }
+</style>

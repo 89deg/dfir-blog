@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    html, body { margin: 0; padding: 0; background: var(--bg); }
+    ::selection { background: var(--shadow); }
+    :root { color-scheme: light; --bg: #FBFBF9; --ink: #161B18; --body: #2B322E; --dim: #454C48; --muted: #6B7370; --faint: #8A928D; --hairline: #E4E6E2; --hairline2: #ECEEE9; --soft: #F5F6F2; --hover: #F4F6F2; --card: #FFFFFF; --shadow: #DCEEE2; --accent: #0E7A4A; --accent-bd: #C4DFCE; --sep: #D3D8D2; --offcell: #C5CBC5; --panel-dark: #161B18; }
+    html[data-theme="dark"] { color-scheme: dark; --bg: #101413; --ink: #E4E9E5; --body: #C6CEC8; --dim: #A9B3AC; --muted: #8D978F; --faint: #707A73; --hairline: #262D29; --hairline2: #212724; --soft: #161B18; --hover: #1A201C; --card: #141917; --shadow: #14291E; --accent: #45A97A; --accent-bd: #2C4A3A; --sep: #343C37; --offcell: #3B443E; --panel-dark: #0B0F0D; }
+    @media (max-width: 760px) {
+      [data-screen-label] { padding-left: 20px !important; padding-right: 20px !important; }
+      [data-mq~="pad"] { padding-left: 20px !important; padding-right: 20px !important; }
+      [data-mq~="stack"] { grid-template-columns: 1fr !important; gap: 14px !important; }
+      [data-mq~="stack"] > * { text-align: left !important; }
+      [data-mq~="static"] { position: static !important; }
+      [data-mq~="nav"] { gap: 14px 18px !important; }
+    }
+  </style>
+  <script src="theme.js"></script>
+</helmet>
+
+<div style="min-height: 100vh; background: var(--bg); color: var(--ink); font-family: 'Newsreader', Georgia, serif; -webkit-font-smoothing: antialiased;">
+
+  <!-- ============ HEADER ============ -->
+  <header data-screen-label="Header" style="border-bottom: 1px solid var(--hairline);">
+    <div data-mq="pad" style="max-width: 1060px; margin: 0 auto; padding: 22px 32px; display: flex; align-items: baseline; justify-content: space-between; gap: 24px; flex-wrap: wrap;">
+      <div style="display: flex; align-items: baseline; gap: 14px;">
+        <a href="DFIR Blog - Home.dc.html" style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; letter-spacing: 0.04em; color: var(--ink); text-decoration: none;">NILS HILLMANN</a>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--faint);">dfir.89deg.com</span>
+      </div>
+      <nav data-mq="nav" style="display: flex; gap: 26px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.08em;">
+        <a href="DFIR Blog - Articles.dc.html" style="color: var(--ink); text-decoration: none;" style-hover="color: var(--accent);">ARTICLES</a>
+        <a href="DFIR Blog - Field Notes.dc.html" style="color: var(--ink); text-decoration: none;" style-hover="color: var(--accent);">FIELD NOTES</a>
+        <a href="DFIR Blog - Toolbox.dc.html" style="color: var(--accent); text-decoration: none;">TOOLBOX</a>
+        <a href="DFIR Blog - About.dc.html" style="color: var(--ink); text-decoration: none;" style-hover="color: var(--accent);">CONTACT</a>
+        <button data-theme-toggle="true" title="Toggle dark mode" style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 1; border: 1px solid var(--sep); background: transparent; color: var(--muted); padding: 4px 9px; cursor: pointer;" style-hover="border-color: var(--accent); color: var(--accent);">&#9680;</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ============ PAGE HEADER ============ -->
+  <section data-screen-label="Toolbox header" style="max-width: 1060px; margin: 0 auto; padding: 72px 32px 0 32px;">
+    <p style="margin: 0 0 20px 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.08em; color: var(--accent);">// TOOLBOX — THE FULL INVENTORY</p>
+    <h1 style="margin: 0; font-size: clamp(34px, 7.5vw, 56px); line-height: 1.08; font-weight: 500; letter-spacing: -0.015em; max-width: 20ch; text-wrap: balance;">Every score comes with a receipt.</h1>
+    <p style="margin: 22px 0 0 0; font-size: 20px; line-height: 1.55; color: var(--dim); font-style: italic; max-width: 58ch; text-wrap: pretty;">Proficiency written in bytes: ten per tool, FF means solid, 00 means not yet. Next to each score: the challenges that earned it.</p>
+    <div style="margin-top: 36px; border: 1px solid var(--hairline); background: var(--soft); padding: 16px 22px; display: flex; gap: 28px; flex-wrap: wrap; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--muted);">
+      <span><span style="color: var(--accent); font-weight: 600;">FF</span> = solid</span>
+      <span><span style="color: var(--offcell); font-weight: 600;">00</span> = not yet</span>
+      <span>THM = TryHackMe</span>
+      <span>CD = CyberDefenders</span>
+      <span style="margin-left: auto;">self-assessed &middot; challenge-backed</span>
+    </div>
+  </section>
+
+  <!-- ============ CATEGORIES ============ -->
+  <section data-screen-label="Tool inventory" style="max-width: 1060px; margin: 0 auto; padding: 24px 32px 0 32px;">
+    <sc-for list="{{ categories }}" as="cat" hint-placeholder-count="5">
+      <div style="padding-top: 48px;">
+        <div style="display: flex; align-items: baseline; gap: 16px; border-bottom: 1px solid var(--ink); padding-bottom: 10px;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; color: var(--accent);">{{ cat.num }}</span>
+          <h2 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; letter-spacing: 0.12em;">{{ cat.label }}</h2>
+        </div>
+        <sc-for list="{{ cat.tools }}" as="t" hint-placeholder-count="2">
+          <div data-mq="stack" style="display: grid; grid-template-columns: minmax(0, 1.1fr) 220px minmax(0, 1fr); gap: 40px; padding: 30px 0; border-bottom: 1px solid var(--hairline2); align-items: start;">
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <a href="{{ t.href }}" style="font-size: 26px; font-weight: 500; color: var(--ink); text-decoration: none; line-height: 1.2;" style-hover="color: var(--accent);">{{ t.name }}</a>
+              <p style="margin: 0; font-size: 16.5px; line-height: 1.55; color: var(--dim); text-wrap: pretty;">{{ t.desc }}</p>
+              <a href="{{ t.href }}" style="font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--accent); text-decoration: none; margin-top: 2px;" style-hover="text-decoration: underline;">{{ t.linkLabel }} &rarr;</a>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 10px; padding-top: 6px;">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 20px; font-weight: 600; color: var(--ink);">{{ t.score }}</span>
+              <div style="display: flex; flex-wrap: wrap; gap: 6px 7px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600;">
+                <sc-for list="{{ t.cells }}" as="c" hint-placeholder-count="10">
+                  <span style="color: {{ c.col }};">{{ c.t }}</span>
+                </sc-for>
+              </div>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--faint);">{{ t.verdict }}</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 2px; padding-top: 6px;">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; color: var(--faint); padding-bottom: 8px;">RECEIPTS</span>
+              <sc-for list="{{ t.challenges }}" as="ch" hint-placeholder-count="3">
+                <div style="display: flex; align-items: baseline; gap: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; padding: 5px 0; border-bottom: 1px dotted var(--hairline);">
+                  <span style="color: var(--accent);">&#10003;</span>
+                  <span style="color: var(--body);">{{ ch.name }}</span>
+                  <span style="margin-left: auto; color: var(--faint); white-space: nowrap;">{{ ch.meta }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-for>
+  </section>
+
+  <!-- ============ ON THE RADAR ============ -->
+  <sc-if value="{{ showRadar }}" hint-placeholder-val="{{ true }}">
+    <section data-screen-label="On the radar" style="max-width: 1060px; margin: 0 auto; padding: 64px 32px 84px 32px;">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; border-bottom: 1px solid var(--ink); padding-bottom: 12px;">
+        <h2 style="margin: 0; font-size: 15px; font-weight: 600; font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.1em;">ON THE RADAR</h2>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--faint);">not started &mdash; still 00 00 00, and I know it</span>
+      </div>
+      <div style="display: flex; gap: 14px; flex-wrap: wrap; padding-top: 22px;">
+        <sc-for list="{{ radar }}" as="r" hint-placeholder-count="4">
+          <div style="border: 1px solid var(--hairline); background: var(--card); padding: 14px 18px; display: flex; flex-direction: column; gap: 5px;">
+            <span style="font-size: 18px; font-weight: 500;">{{ r.name }}</span>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--faint);">{{ r.why }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+  </sc-if>
+
+  <!-- ============ FOOTER ============ -->
+  <footer data-screen-label="Footer" style="border-top: 1px solid var(--ink); background: var(--panel-dark); color: #E8EBE8;">
+    <div data-mq="pad" style="max-width: 1060px; margin: 0 auto; padding: 18px 32px; display: flex; flex-wrap: wrap; gap: 6px 16px; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--muted);">
+      <span>&copy; 2026 Nils Hillmann &middot; dfir.89deg.com</span>
+      <span>built by hand &middot; no trackers</span>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;proficiencyStyle&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;hex bytes&quot;, &quot;blocks&quot;], &quot;default&quot;: &quot;hex bytes&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Display&quot; },
+  &quot;showRadar&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Sections&quot; }
+}">
+class Component extends DCLogic {
+  renderVals() {
+    const style = this.props.proficiencyStyle ?? 'hex bytes';
+    const ON = 'var(--accent)';
+    const OFF = 'var(--offcell)';
+    const cells = (n) => Array.from({ length: 10 }, (_, i) => {
+      const on = i < n;
+      if (style === 'blocks') return { t: on ? '\u2588' : '\u2591', col: on ? ON : OFF };
+      return { t: on ? 'FF' : '00', col: on ? ON : OFF };
+    });
+
+    const mk = (t) => ({ ...t, cells: cells(t.level), score: t.level + '/10' });
+
+    const categories = [
+      {
+        num: '01', label: 'IMAGING & DISK',
+        tools: [
+          mk({
+            name: 'FTK Imager', level: 4,
+            desc: 'Forensic disk imaging, evidence preview and export. My acquisition workhorse: image, hash, verify, then work on the copy \u2014 never the original.',
+            linkLabel: 'exterro.com \u00b7 free', href: 'https://www.exterro.com/digital-forensics-software/ftk-imager',
+            verdict: 'can acquire & verify solo; advanced export workflows still shaky',
+            challenges: [
+              { name: 'Intro to Digital Forensics', meta: 'THM \u00b7 2026-03' },
+              { name: 'Disk Analysis Basics', meta: 'THM \u00b7 2026-04' },
+              { name: 'Secret Recipe', meta: 'THM \u00b7 2026-05' },
+              { name: 'AfricanFalls', meta: 'CD \u00b7 2026-05' }
+            ]
+          }),
+          mk({
+            name: 'Autopsy', level: 6,
+            desc: 'Open-source disk forensics platform. Timeline analysis, keyword search, file carving \u2014 where imaged evidence becomes a case.',
+            linkLabel: 'autopsy.com \u00b7 open source', href: 'https://www.autopsy.com/',
+            verdict: 'comfortable with full case workflow; module tuning is next',
+            challenges: [
+              { name: 'Autopsy', meta: 'THM \u00b7 2026-04' },
+              { name: 'Disk Analysis & Autopsy', meta: 'THM \u00b7 2026-05' },
+              { name: 'NTFS timestomping lab', meta: 'THM \u00b7 2026-06' }
+            ]
+          })
+        ]
+      },
+      {
+        num: '02', label: 'MEMORY',
+        tools: [
+          mk({
+            name: 'Volatility 3', level: 5,
+            desc: 'Memory forensics framework. Process trees, injected code, registry hives from RAM \u2014 the evidence that vanishes on reboot.',
+            linkLabel: 'github.com/volatilityfoundation', href: 'https://github.com/volatilityfoundation/volatility3',
+            verdict: 'core plugins solid; kernel structures still opaque to me',
+            challenges: [
+              { name: 'Volatile Memory Analysis', meta: 'THM \u00b7 2026-04' },
+              { name: 'DumpMe', meta: 'CD \u00b7 2026-07' }
+            ]
+          })
+        ]
+      },
+      {
+        num: '03', label: 'NETWORK',
+        tools: [
+          mk({
+            name: 'Wireshark', level: 7,
+            desc: 'Packet analysis. From DHCP handshakes to carved TCP streams \u2014 my strongest tool, and the subject of most write-ups here.',
+            linkLabel: 'wireshark.org \u00b7 open source', href: 'https://www.wireshark.org/',
+            verdict: 'fluent with display filters & protocol dissection; TLS decryption next',
+            challenges: [
+              { name: 'Wireshark: The Basics', meta: 'THM \u00b7 2026-03' },
+              { name: 'Wireshark: Packet Operations', meta: 'THM \u00b7 2026-04' },
+              { name: 'Wireshark: Traffic Analysis', meta: 'THM \u00b7 2026-04' },
+              { name: 'Carnage', meta: 'THM \u00b7 2026-05' },
+              { name: 'PacketMaze', meta: 'CD \u00b7 2026-06' }
+            ]
+          })
+        ]
+      },
+      {
+        num: '04', label: 'MOBILE',
+        tools: [
+          mk({
+            name: 'ALEAPP', level: 10,
+            desc: 'Android Logs, Events And Protobuf Parser. My deepest tool \u2014 I read its parser source, query the SQLite databases behind it, and contribute issues upstream.',
+            linkLabel: 'github.com/abrignoni/ALEAPP', href: 'https://github.com/abrignoni/ALEAPP',
+            verdict: 'daily driver \u2014 found & reported a missed artifact upstream',
+            challenges: [
+              { name: 'Android Forensics', meta: 'THM \u00b7 2026-05' },
+              { name: 'Hunter (Android)', meta: 'CD \u00b7 2026-06' },
+              { name: 'Manual vs. parser audit', meta: 'own lab \u00b7 2026-05' }
+            ]
+          })
+        ]
+      },
+      {
+        num: '05', label: 'TRIAGE',
+        tools: [
+          mk({
+            name: 'KAPE', level: 3,
+            desc: 'Kroll Artifact Parser and Extractor. Targeted triage collection \u2014 grab what matters in minutes instead of imaging for hours.',
+            linkLabel: 'kroll.com \u00b7 free for individuals', href: 'https://www.kroll.com/en/services/cyber/incident-response-recovery/kroll-artifact-parser-extractor-kape',
+            verdict: 'currently learning \u2014 targets & modules make sense, workflow doesn\u2019t yet',
+            challenges: [
+              { name: 'KAPE', meta: 'THM \u00b7 in progress' }
+            ]
+          })
+        ]
+      }
+    ];
+
+    const radar = [
+      { name: 'Plaso / log2timeline', why: 'super-timelines' },
+      { name: 'Velociraptor', why: 'endpoint hunting at scale' },
+      { name: 'Eric Zimmerman tools', why: 'registry & shellbags' },
+      { name: 'iLEAPP', why: 'the iOS side of LEAPP' },
+      { name: 'Zeek', why: 'network monitoring beyond pcaps' }
+    ];
+
+    return { categories, radar, showRadar: this.props.showRadar ?? true };
+  }
+}
+</script>
+</body>
+</html>

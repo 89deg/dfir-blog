@@ -1,0 +1,323 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const articles = await getCollection('articles');
+  const sorted = articles.sort((a, b) => b.data.date.localeCompare(a.data.date));
+  return sorted.map((entry, i) => ({
+    params: { slug: entry.slug },
+    props: {
+      entry,
+      prev: sorted[i + 1] ?? null,
+      next: sorted[i - 1] ?? null
+    }
+  }));
+}
+
+type Props = { entry: CollectionEntry<'articles'>; prev: CollectionEntry<'articles'> | null; next: CollectionEntry<'articles'> | null };
+const { entry, prev, next } = Astro.props;
+const { Content, headings } = await entry.render();
+
+// Only H2s for the TOC — numbered 01, 02, ...
+const toc = headings
+  .filter(h => h.depth === 2)
+  .map((h, i) => ({ ...h, index: String(i + 1).padStart(2, '0') }));
+
+function minutesLabel(m: string | number) {
+  return typeof m === 'number' ? `${m} MIN READ` : m;
+}
+---
+<BaseLayout title={`${entry.data.title} — dfir.89deg.com`} description={entry.data.dek}>
+
+  <!-- ARTICLE HEADER -->
+  <section class="article-head container">
+    <div class="crumbs">
+      <a href="/articles" class="crumb-link">← ALL ARTICLES</a>
+      <span class="crumb-sep">/</span>
+      <span class="chip">{entry.data.tag}</span>
+      <span>{entry.data.date}</span>
+      <span class="crumb-sep">·</span>
+      <span>{minutesLabel(entry.data.minutes)}</span>
+    </div>
+    <h1>{entry.data.title}</h1>
+    <p class="dek">{entry.data.dek}</p>
+    <div class="rule"></div>
+  </section>
+
+  <!-- BODY -->
+  <div class="article-body container">
+
+    {toc.length > 0 && (
+      <nav class="toc" aria-label="Table of contents">
+        <span class="toc-label">CONTENTS</span>
+        {toc.map(h => (
+          <a href={`#${h.slug}`} class="toc-link">{h.index}&nbsp;&nbsp;{h.text}</a>
+        ))}
+      </nav>
+    )}
+
+    <article class="prose">
+      <Content />
+
+      <div class="meta-footer">
+        <span>practiced in: 2× TryHackMe network labs</span>
+        <span>corrections welcome → <a href="mailto:dfir@89deg.com">dfir@89deg.com</a></span>
+      </div>
+    </article>
+  </div>
+
+  <!-- PREV / NEXT -->
+  <section class="prev-next container">
+    <div class="prev-next-grid">
+      <a class="pn-item pn-prev" href={prev ? `/articles/${prev.slug}` : '/articles'}>
+        <span class="pn-label">← PREVIOUS</span>
+        <span class="pn-title">{prev ? prev.data.title : 'All write-ups'}</span>
+      </a>
+      <a class="pn-item pn-next" href={next ? `/articles/${next.slug}` : '/articles'}>
+        <span class="pn-label">NEXT →</span>
+        <span class="pn-title">{next ? next.data.title : 'All write-ups'}</span>
+      </a>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style is:global>
+  /* prose styles (targets rendered markdown) */
+  .prose {
+    font-size: 19px;
+    line-height: 1.7;
+    color: var(--body);
+  }
+  .prose h2 {
+    margin: 48px 0 0 0;
+    font-size: 30px;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .prose h2:first-child { margin-top: 6px; }
+  .prose p { margin: 16px 0 0 0; text-wrap: pretty; }
+  .prose code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 15px;
+  }
+  .prose a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent-bd);
+  }
+  .prose a:hover { border-bottom-color: var(--accent); }
+
+  /* DORA table */
+  .prose .dora-table {
+    margin: 24px 0 0 0;
+    border: 1px solid var(--ink);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    overflow-x: auto;
+  }
+  .prose .dora-inner { min-width: 560px; }
+  .prose .dora-head,
+  .prose .dora-row {
+    display: grid;
+    grid-template-columns: 44px 110px 1fr 130px;
+    gap: 16px;
+    padding: 13px 18px;
+    align-items: baseline;
+  }
+  .prose .dora-head {
+    padding: 12px 18px;
+    background: var(--panel-dark);
+    color: #E8EBE8;
+    letter-spacing: 0.06em;
+  }
+  .prose .dora-row { border-bottom: 1px solid var(--hairline); }
+  .prose .dora-row.last { border-bottom: none; }
+  .prose .letter { font-weight: 600; }
+  .prose .letter.on, .prose .from.on { color: var(--accent); }
+  .prose .letter.off, .prose .from.off { color: var(--faint); }
+  .prose .what { color: var(--dim); }
+  .prose .dora-note {
+    margin: 16px 0 0 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  /* Option callouts */
+  .prose .opt-callout {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 20px;
+    padding: 16px 20px;
+    background: var(--soft);
+    border-left: 3px solid var(--accent);
+    align-items: baseline;
+    margin-top: 14px;
+  }
+  .prose .opt-callout:first-of-type { margin-top: 20px; }
+  .prose .opt-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .prose .opt-body {
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--body);
+  }
+  .prose .opt-body code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+  }
+
+  /* Custom code block */
+  .prose .code-block {
+    margin: 20px 0 0 0;
+    background: var(--panel-dark);
+    color: #D8DED9;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    line-height: 2.1;
+    padding: 22px 26px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+  }
+  .prose .code-block .c-comment { color: #6B7370; }
+  .prose .code-block .c-field { color: #7FC79F; }
+  .prose .code-block .c-op { color: #E8EBE8; }
+  .prose .code-block .c-str { color: #D9A54A; }
+
+  /* Takeaway */
+  .prose .takeaway {
+    margin: 20px 0 0 0;
+    border: 1px solid var(--ink);
+    background: var(--card);
+    padding: 24px 28px;
+    box-shadow: 5px 5px 0 0 var(--shadow);
+    font-size: 19px;
+    line-height: 1.65;
+    text-wrap: pretty;
+  }
+  .prose .takeaway em { font-style: italic; }
+
+  /* Shiki code block fallback */
+  .prose pre {
+    padding: 22px 26px;
+    overflow-x: auto;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 760px) {
+    .prose .opt-callout { grid-template-columns: 1fr; }
+  }
+</style>
+
+<style>
+  .article-head { padding-top: 72px; }
+  .crumbs {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    flex-wrap: wrap;
+  }
+  .crumb-link { color: var(--muted); text-decoration: none; }
+  .crumb-link:hover { color: var(--accent); }
+  .crumb-sep { color: var(--sep); }
+  h1 {
+    margin: 26px 0 0 0;
+    font-size: clamp(34px, 7.5vw, 56px);
+    line-height: 1.08;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    max-width: 20ch;
+    text-wrap: balance;
+  }
+  .dek {
+    margin: 24px 0 0 0;
+    font-size: 22px;
+    line-height: 1.5;
+    color: var(--dim);
+    font-style: italic;
+    max-width: 56ch;
+    text-wrap: pretty;
+  }
+  .rule { margin-top: 44px; border-bottom: 1px solid var(--ink); }
+
+  .article-body {
+    padding-top: 48px;
+    padding-bottom: 32px;
+    display: grid;
+    grid-template-columns: 220px minmax(0, 660px);
+    gap: 56px;
+    align-items: start;
+  }
+  .toc {
+    position: sticky;
+    top: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    line-height: 1.5;
+    padding-top: 6px;
+  }
+  .toc-label {
+    letter-spacing: 0.1em;
+    color: var(--faint);
+  }
+  .toc-link {
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .toc-link:hover { color: var(--accent); }
+
+  .meta-footer {
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 1px solid var(--hairline);
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .meta-footer a { color: var(--accent); text-decoration: none; }
+
+  .prev-next { padding-top: 24px; padding-bottom: 84px; }
+  .prev-next-grid {
+    border-top: 1px solid var(--ink);
+    padding-top: 28px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+  }
+  .pn-item { text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 8px; }
+  .pn-next { text-align: right; }
+  .pn-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--faint);
+  }
+  .pn-title { font-size: 22px; font-weight: 500; line-height: 1.3; }
+  .pn-item:hover .pn-title { color: var(--accent); }
+
+  @media (max-width: 760px) {
+    .article-body { grid-template-columns: 1fr; gap: 32px; }
+    .toc { position: static; }
+    .prev-next-grid { grid-template-columns: 1fr; gap: 20px; }
+    .pn-next { text-align: left; }
+  }
+</style>

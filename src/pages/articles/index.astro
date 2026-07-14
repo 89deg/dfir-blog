@@ -1,0 +1,136 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const all = (await getCollection('articles'))
+  .sort((a, b) => b.data.date.localeCompare(a.data.date));
+
+const TAGS = ['ALL', 'NETWORK', 'CRYPTO', 'DISK', 'MOBILE'];
+
+function minutesLabel(m: string | number) {
+  return typeof m === 'number' ? `${m} MIN` : m;
+}
+---
+<BaseLayout title="Articles — dfir.89deg.com">
+
+  <section class="page-head container">
+    <p class="kicker">// ARTICLES — ALL WRITE-UPS</p>
+    <h1>Hold your breath — we’re doing a deep dive.</h1>
+    <p class="lede">Let’s take a look behind the curtain. Understand it, calculate it, <em>code</em> it.</p>
+  </section>
+
+  {all.length > 0 && (
+    <section class="container filter-section" data-filter-root>
+      <div class="filter-bar">
+        <span class="label">FILTER:</span>
+        {TAGS.map(tag => (
+          <button
+            type="button"
+            class="filter-chip"
+            data-filter-tag={tag}
+            aria-pressed={tag === 'ALL' ? 'true' : 'false'}
+          >{tag}</button>
+        ))}
+        <span class="count" data-filter-count>{all.length} of {all.length} write-ups</span>
+      </div>
+    </section>
+  )}
+
+  <section class="container list-section">
+    <div data-articles>
+      {all.length === 0 ? (
+        <div class="empty-state">
+          <p class="empty-line">&gt; no write-ups yet · the first ones are on the way_</p>
+        </div>
+      ) : all.map(a => (
+        <a
+          href={`/articles/${a.slug}`}
+          class="list-row article-row"
+          data-tag={a.data.tag}
+          data-draft={a.data.draft ? '1' : '0'}
+        >
+          <span class="date-block">
+            <span class="date">{a.data.date}</span>
+            <span class="mins">{minutesLabel(a.data.minutes)}</span>
+          </span>
+          <span>
+            <span class="title" style={a.data.draft ? 'color: var(--faint);' : ''}>{a.data.title}</span>
+            <span class="dek">{a.data.dek}</span>
+          </span>
+          <span class={a.data.draft ? 'chip draft' : 'chip'}>{a.data.draft ? `DRAFT · ${a.data.tag}` : a.data.tag}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  .page-head { padding-top: 72px; }
+  h1 {
+    margin: 0;
+    font-size: clamp(34px, 7.5vw, 56px);
+    line-height: 1.08;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    max-width: 20ch;
+    text-wrap: balance;
+  }
+  .lede {
+    margin: 22px 0 0 0;
+    font-size: 20px;
+    line-height: 1.55;
+    color: var(--dim);
+    font-style: italic;
+    max-width: 58ch;
+    text-wrap: pretty;
+  }
+  .filter-section { padding-top: 40px; }
+  .list-section { padding-top: 12px; padding-bottom: 84px; }
+  .empty-state {
+    border-top: 1px solid var(--ink);
+    padding-top: 40px;
+  }
+  .empty-line {
+    margin: 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--faint);
+  }
+  .article-row .date-block { display: flex; flex-direction: column; gap: 5px; }
+  .article-row .mins {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--faint);
+  }
+  @media (max-width: 760px) {
+    .article-row .date-block { flex-direction: row; gap: 12px; }
+  }
+</style>
+
+<script>
+  const root = document.querySelector('[data-filter-root]');
+  const rowsRoot = document.querySelector('[data-articles]');
+  const countEl = document.querySelector('[data-filter-count]');
+  const chips = root?.querySelectorAll<HTMLButtonElement>('[data-filter-tag]') ?? [];
+  const rows = Array.from(rowsRoot?.querySelectorAll<HTMLElement>('.article-row') ?? []);
+  const total = rows.length;
+
+  function applyFilter(tag: string) {
+    let visible = 0;
+    for (const row of rows) {
+      const rowTag = row.dataset.tag;
+      const show = tag === 'ALL' || rowTag === tag;
+      row.style.display = show ? '' : 'none';
+      if (show) visible++;
+    }
+    if (countEl) countEl.textContent = `${visible} of ${total} write-ups`;
+    for (const chip of chips) {
+      chip.setAttribute('aria-pressed', chip.dataset.filterTag === tag ? 'true' : 'false');
+    }
+  }
+
+  for (const chip of chips) {
+    chip.addEventListener('click', () => applyFilter(chip.dataset.filterTag!));
+  }
+</script>

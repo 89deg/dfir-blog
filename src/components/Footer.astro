@@ -1,0 +1,47 @@
+---
+// Simple bottom bar; the About/Home pages have their own dark CTA above this.
+---
+<footer class="site-footer">
+  <div class="container inner">
+    <span>© 2026 Nils Hillmann · dfir.89deg.com</span>
+    <nav class="foot-links">
+      <a href="/impressum">Imprint</a>
+      <span>built with love in worpswede — the real life shire</span>
+    </nav>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: auto;
+    border-top: 1px solid var(--ink);
+    background: var(--panel-dark);
+    color: #E8EBE8;
+  }
+  .inner {
+    padding-top: 18px;
+    padding-bottom: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    justify-content: space-between;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    color: #6B7370;
+  }
+  .foot-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    align-items: baseline;
+  }
+  .foot-links a {
+    color: #9BA59E;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+  }
+  .foot-links a:hover {
+    color: #E8EBE8;
+    border-bottom-color: #9BA59E;
+  }
+</style>

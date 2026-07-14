@@ -1,0 +1,98 @@
+---
+interface Props {
+  currentPath: string;
+}
+const { currentPath } = Astro.props;
+
+const nav = [
+  { label: 'ARTICLES',    href: '/articles',    match: /^\/articles(\/|$)/ },
+  { label: 'FIELD NOTES', href: '/field-notes', match: /^\/field-notes(\/|$)/ },
+  { label: 'TOOLBOX',     href: '/toolbox',     match: /^\/toolbox(\/|$)/ },
+  // CASE FILES ausgeblendet, bis der erste Case online geht:
+  // { label: 'CASE FILES',  href: '/case-files',  match: /^\/case-files(\/|$)/ },
+  { label: 'CONTACT',     href: '/about',       match: /^\/about(\/|$)/ }
+];
+---
+<header class="site-header">
+  <div class="container inner">
+    <div class="brand">
+      <a href="/" class="brand-mark" aria-label="Home">
+        <img src="/logo.png" alt="" width="32" height="32" />
+      </a>
+      <a href="/" class="brand-name">NILS HILLMANN</a>
+      <span class="brand-domain">dfir.89deg.com</span>
+    </div>
+    <nav class="site-nav" aria-label="Primary">
+      {nav.map(n => (
+        <a
+          href={n.href}
+          class={n.match.test(currentPath) ? 'nav-link active' : 'nav-link'}
+        >{n.label}</a>
+      ))}
+      <button
+        type="button"
+        data-theme-toggle
+        title="Toggle dark mode"
+        aria-label="Toggle dark mode"
+        class="theme-toggle"
+      >◐</button>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header { border-bottom: 1px solid var(--hairline); }
+  .inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+    padding-top: 22px;
+    padding-bottom: 22px;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-mark { display: inline-flex; line-height: 0; }
+  .brand-mark img { display: block; width: 32px; height: 32px; }
+  .brand-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .brand-domain {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--faint);
+  }
+  .site-nav {
+    display: flex;
+    gap: 26px;
+    align-items: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+  }
+  .nav-link {
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .nav-link:hover { color: var(--accent); }
+  .nav-link.active { color: var(--accent); }
+  .theme-toggle {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    line-height: 1;
+    border: 1px solid var(--sep);
+    background: transparent;
+    color: var(--muted);
+    padding: 4px 9px;
+    cursor: pointer;
+  }
+  .theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+  @media (max-width: 760px) {
+    .site-nav { gap: 14px 18px; }
+  }
+</style>

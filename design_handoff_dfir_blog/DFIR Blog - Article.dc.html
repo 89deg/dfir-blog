@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    html, body { margin: 0; padding: 0; background: var(--bg); }
+    ::selection { background: var(--shadow); }
+    :root { color-scheme: light; --bg: #FBFBF9; --ink: #161B18; --body: #2B322E; --dim: #454C48; --muted: #6B7370; --faint: #8A928D; --hairline: #E4E6E2; --hairline2: #ECEEE9; --soft: #F5F6F2; --hover: #F4F6F2; --card: #FFFFFF; --shadow: #DCEEE2; --accent: #0E7A4A; --accent-bd: #C4DFCE; --sep: #D3D8D2; --offcell: #C5CBC5; --panel-dark: #161B18; }
+    html[data-theme="dark"] { color-scheme: dark; --bg: #101413; --ink: #E4E9E5; --body: #C6CEC8; --dim: #A9B3AC; --muted: #8D978F; --faint: #707A73; --hairline: #262D29; --hairline2: #212724; --soft: #161B18; --hover: #1A201C; --card: #141917; --shadow: #14291E; --accent: #45A97A; --accent-bd: #2C4A3A; --sep: #343C37; --offcell: #3B443E; --panel-dark: #0B0F0D; }
+    @media (max-width: 760px) {
+      [data-screen-label] { padding-left: 20px !important; padding-right: 20px !important; }
+      [data-mq~="pad"] { padding-left: 20px !important; padding-right: 20px !important; }
+      [data-mq~="stack"] { grid-template-columns: 1fr !important; gap: 14px !important; }
+      [data-mq~="stack"] > * { text-align: left !important; }
+      [data-mq~="static"] { position: static !important; }
+      [data-mq~="nav"] { gap: 14px 18px !important; }
+      [data-mq~="stack-loose"] { grid-template-columns: 1fr !important; gap: 32px !important; }
+    }
+  </style>
+  <script src="theme.js"></script>
+</helmet>
+
+<div style="min-height: 100vh; background: var(--bg); color: var(--ink); font-family: 'Newsreader', Georgia, serif; -webkit-font-smoothing: antialiased;">
+
+  <!-- ============ HEADER ============ -->
+  <header data-screen-label="Header" style="border-bottom: 1px solid var(--hairline);">
+    <div data-mq="pad" style="max-width: 1060px; margin: 0 auto; padding: 22px 32px; display: flex; align-items: baseline; justify-content: space-between; gap: 24px; flex-wrap: wrap;">
+      <div style="display: flex; align-items: baseline; gap: 14px;">
+        <a href="DFIR Blog - Home.dc.html" style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; letter-spacing: 0.04em; color: var(--ink); text-decoration: none;">NILS HILLMANN</a>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--faint);">dfir.89deg.com</span>
+      </div>
+      <nav data-mq="nav" style="display: flex; gap: 26px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.08em;">
+        <a href="DFIR Blog - Articles.dc.html" style="color: var(--accent); text-decoration: none;">ARTICLES</a>
+        <a href="DFIR Blog - Home.dc.html#field-notes" style="color: var(--ink); text-decoration: none;" style-hover="color: var(--accent);">FIELD NOTES</a>
+        <a href="DFIR Blog - Toolbox.dc.html" style="color: var(--ink); text-decoration: none;" style-hover="color: var(--accent);">TOOLBOX</a>
+        <a href="DFIR Blog - About.dc.html" style="color: var(--ink); text-decoration: none;" style-hover="color: var(--accent);">CONTACT</a>
+        <button data-theme-toggle="true" title="Toggle dark mode" style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 1; border: 1px solid var(--sep); background: transparent; color: var(--muted); padding: 4px 9px; cursor: pointer;" style-hover="border-color: var(--accent); color: var(--accent);">&#9680;</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ============ ARTICLE HEADER ============ -->
+  <section data-screen-label="Article header" style="max-width: 1060px; margin: 0 auto; padding: 72px 32px 0 32px;">
+    <div style="display: flex; align-items: baseline; gap: 16px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.06em; color: var(--muted); flex-wrap: wrap;">
+      <a href="DFIR Blog - Articles.dc.html" style="color: var(--muted); text-decoration: none;" style-hover="color: var(--accent);">&larr; ALL ARTICLES</a>
+      <span style="color: var(--sep);">/</span>
+      <span style="color: var(--accent); border: 1px solid var(--accent-bd); padding: 4px 9px;">NETWORK</span>
+      <span>2026-05-30</span>
+      <span style="color: var(--sep);">&middot;</span>
+      <span>9 MIN READ</span>
+    </div>
+    <h1 style="margin: 26px 0 0 0; font-size: clamp(34px, 7.5vw, 56px); line-height: 1.08; font-weight: 500; letter-spacing: -0.015em; max-width: 20ch; text-wrap: balance;">Finding the host: DHCP in Wireshark</h1>
+    <p style="margin: 24px 0 0 0; font-size: 22px; line-height: 1.5; color: var(--dim); font-style: italic; max-width: 56ch; text-wrap: pretty;">An IP address is a rental. Four DHCP packets tell you the hostname, the hardware and often the OS &mdash; more than the IP ever will.</p>
+    <div style="margin-top: 44px; border-bottom: 1px solid var(--ink);"></div>
+  </section>
+
+  <!-- ============ BODY ============ -->
+  <div data-mq="stack-loose pad" style="max-width: 1060px; margin: 0 auto; padding: 48px 32px 32px 32px; display: grid; grid-template-columns: 220px minmax(0, 660px); gap: 56px; align-items: start;">
+
+    <!-- TOC -->
+    <sc-if value="{{ showToc }}" hint-placeholder-val="{{ true }}">
+      <nav data-screen-label="Table of contents" data-mq="static" style="position: sticky; top: 32px; display: flex; flex-direction: column; gap: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 1.5; padding-top: 6px;">
+        <span style="letter-spacing: 0.1em; color: var(--faint);">CONTENTS</span>
+        <a href="#why-dhcp" style="color: var(--ink); text-decoration: none;" style-hover="color: var(--accent);">01&nbsp; Why the IP lies</a>
+        <a href="#dora" style="color: var(--ink); text-decoration: none;" style-hover="color: var(--accent);">02&nbsp; The DORA handshake</a>
+        <a href="#options" style="color: var(--ink); text-decoration: none;" style-hover="color: var(--accent);">03&nbsp; The options that talk</a>
+        <a href="#filters" style="color: var(--ink); text-decoration: none;" style-hover="color: var(--accent);">04&nbsp; Filters that find hosts</a>
+        <a href="#takeaway" style="color: var(--ink); text-decoration: none;" style-hover="color: var(--accent);">05&nbsp; Takeaway</a>
+      </nav>
+    </sc-if>
+
+    <!-- PROSE -->
+    <article data-screen-label="Article body" style="font-size: 19px; line-height: 1.7; color: var(--body);">
+
+      <h2 id="why-dhcp" style="margin: 6px 0 0 0; font-size: 30px; font-weight: 500; color: var(--ink); letter-spacing: -0.01em;">Why the IP lies</h2>
+      <p style="margin: 16px 0 0 0; text-wrap: pretty;">You get handed a pcap and a question: <em>&ldquo;which machine did this?&rdquo;</em> The traffic points at 10.0.2.117 &mdash; and that answer is worth almost nothing. DHCP leases expire. By the time you write the report, 10.0.2.117 may be a different laptop entirely.</p>
+      <p style="margin: 16px 0 0 0; text-wrap: pretty;">What you actually want is an identity that survives the lease: a hostname, a MAC address, a vendor. Conveniently, every machine that joins the network announces exactly that &mdash; in cleartext &mdash; the moment it asks for an address.</p>
+
+      <h2 id="dora" style="margin: 48px 0 0 0; font-size: 30px; font-weight: 500; color: var(--ink); letter-spacing: -0.01em;">The DORA handshake</h2>
+      <p style="margin: 16px 0 0 0; text-wrap: pretty;">A lease is negotiated in four packets. Two come from the client &mdash; those are the ones that identify it.</p>
+      <div style="margin: 24px 0 0 0; border: 1px solid var(--ink); font-family: 'IBM Plex Mono', monospace; font-size: 13px; overflow-x: auto;"><div style="min-width: 560px;">
+        <div style="display: grid; grid-template-columns: 44px 110px 1fr 130px; gap: 16px; padding: 12px 18px; background: var(--panel-dark); color: #E8EBE8; letter-spacing: 0.06em;">
+          <span>#</span><span>MESSAGE</span><span>WHAT IT SAYS</span><span>FROM</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 44px 110px 1fr 130px; gap: 16px; padding: 13px 18px; border-bottom: 1px solid var(--hairline); align-items: baseline;">
+          <span style="color: var(--accent); font-weight: 600;">D</span><span>Discover</span><span style="color: var(--dim);">&ldquo;Anyone out there? Here&rsquo;s who I am.&rdquo;</span><span style="color: var(--accent);">client &#9666;</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 44px 110px 1fr 130px; gap: 16px; padding: 13px 18px; border-bottom: 1px solid var(--hairline); align-items: baseline;">
+          <span style="color: var(--faint); font-weight: 600;">O</span><span>Offer</span><span style="color: var(--dim);">&ldquo;You can have 10.0.2.117.&rdquo;</span><span style="color: var(--faint);">server</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 44px 110px 1fr 130px; gap: 16px; padding: 13px 18px; border-bottom: 1px solid var(--hairline); align-items: baseline;">
+          <span style="color: var(--accent); font-weight: 600;">R</span><span>Request</span><span style="color: var(--dim);">&ldquo;I&rsquo;ll take it &mdash; and here&rsquo;s my name again.&rdquo;</span><span style="color: var(--accent);">client &#9666;</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 44px 110px 1fr 130px; gap: 16px; padding: 13px 18px; align-items: baseline;">
+          <span style="color: var(--faint); font-weight: 600;">A</span><span>ACK</span><span style="color: var(--dim);">&ldquo;It&rsquo;s yours for 86400 seconds.&rdquo;</span><span style="color: var(--faint);">server</span>
+        </div>
+      </div></div>
+      <p style="margin: 16px 0 0 0; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--muted);">Discover and Request carry the client&rsquo;s identity. Focus there.</p>
+
+      <h2 id="options" style="margin: 48px 0 0 0; font-size: 30px; font-weight: 500; color: var(--ink); letter-spacing: -0.01em;">The options that talk</h2>
+      <p style="margin: 16px 0 0 0; text-wrap: pretty;">The bootp payload is a list of numbered options. Three of them do most of the forensic work:</p>
+      <div style="margin: 20px 0 0 0; display: flex; flex-direction: column; gap: 14px;">
+        <div data-mq="stack" style="display: grid; grid-template-columns: 120px 1fr; gap: 20px; padding: 16px 20px; background: var(--soft); border-left: 3px solid #0E7A4A; align-items: baseline;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: var(--accent);">Option 12</span>
+          <span style="font-size: 17px; line-height: 1.55; color: var(--body);"><strong>Host Name.</strong> The machine says its own name: <span style="font-family: 'IBM Plex Mono', monospace; font-size: 14px;">DESKTOP-K4R2M9</span>, <span style="font-family: 'IBM Plex Mono', monospace; font-size: 14px;">iPhone-von-Lena</span>. Often the whole case, one field.</span>
+        </div>
+        <div data-mq="stack" style="display: grid; grid-template-columns: 120px 1fr; gap: 20px; padding: 16px 20px; background: var(--soft); border-left: 3px solid #0E7A4A; align-items: baseline;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: var(--accent);">Option 61</span>
+          <span style="font-size: 17px; line-height: 1.55; color: var(--body);"><strong>Client Identifier.</strong> Usually the MAC address &mdash; and the first three bytes (the OUI) name the hardware vendor. <span style="font-family: 'IBM Plex Mono', monospace; font-size: 14px;">3c:22:fb</span> is Apple; a &ldquo;printer&rdquo; with an Apple OUI is a story.</span>
+        </div>
+        <div data-mq="stack" style="display: grid; grid-template-columns: 120px 1fr; gap: 20px; padding: 16px 20px; background: var(--soft); border-left: 3px solid #0E7A4A; align-items: baseline;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: var(--accent);">Option 55</span>
+          <span style="font-size: 17px; line-height: 1.55; color: var(--body);"><strong>Parameter Request List.</strong> Which options the client asks for, in which order, is an OS fingerprint. Windows, macOS and Android each have a recognizable signature &mdash; even when the hostname was scrubbed.</span>
+        </div>
+      </div>
+
+      <h2 id="filters" style="margin: 48px 0 0 0; font-size: 30px; font-weight: 500; color: var(--ink); letter-spacing: -0.01em;">Filters that find hosts</h2>
+      <p style="margin: 16px 0 0 0; text-wrap: pretty;">In practice, three display filters get you from &ldquo;a pcap&rdquo; to &ldquo;a machine&rdquo;:</p>
+      <div style="margin: 20px 0 0 0; background: var(--panel-dark); color: #D8DED9; font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 2.1; padding: 22px 26px; overflow-x: auto;">
+        <div><span style="color: var(--muted);"># every lease negotiation in the capture</span></div>
+        <div><span style="color: #7FC79F;">dhcp</span></div>
+        <div style="margin-top: 10px;"><span style="color: var(--muted);"># who claims a specific name</span></div>
+        <div><span style="color: #7FC79F;">dhcp.option.hostname</span> <span style="color: #E8EBE8;">contains</span> <span style="color: #D9A54A;">"DESKTOP"</span></div>
+        <div style="margin-top: 10px;"><span style="color: var(--muted);"># the packets where clients identify themselves</span></div>
+        <div><span style="color: #7FC79F;">dhcp.option.dhcp</span> <span style="color: #E8EBE8;">==</span> <span style="color: #D9A54A;">3</span> <span style="color: var(--muted);">&nbsp;# Request</span></div>
+      </div>
+      <p style="margin: 16px 0 0 0; text-wrap: pretty;">Then <em>Statistics &rarr; Conversations</em> ties the MAC to every flow it touched. From there the question is no longer &ldquo;which IP&rdquo; but &ldquo;what did <span style="font-family: 'IBM Plex Mono', monospace; font-size: 15px;">DESKTOP-K4R2M9</span> do at 03:12&rdquo; &mdash; which is a question a report can answer.</p>
+
+      <h2 id="takeaway" style="margin: 48px 0 0 0; font-size: 30px; font-weight: 500; color: var(--ink); letter-spacing: -0.01em;">Takeaway</h2>
+      <div style="margin: 20px 0 0 0; border: 1px solid var(--ink); background: var(--card); padding: 24px 28px; box-shadow: 5px 5px 0 0 var(--shadow);">
+        <p style="margin: 0; font-size: 19px; line-height: 1.65; text-wrap: pretty;">IPs identify a <em>moment</em>; DHCP identifies a <em>machine</em>. Before you pivot on an address, spend thirty seconds on the lease that created it &mdash; hostname, MAC, vendor, OS fingerprint. It&rsquo;s the cheapest attribution you&rsquo;ll ever get.</p>
+      </div>
+
+      <!-- meta footer -->
+      <div style="margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--hairline); display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--muted);">
+        <span>practiced in: 2&times; TryHackMe network labs</span>
+        <span>corrections welcome &rarr; <a href="mailto:nils@89deg.com" style="color: var(--accent); text-decoration: none;">nils@89deg.com</a></span>
+      </div>
+    </article>
+  </div>
+
+  <!-- ============ NEXT / PREV ============ -->
+  <section data-screen-label="Read next" style="max-width: 1060px; margin: 0 auto; padding: 24px 32px 84px 32px;">
+    <div data-mq="stack" style="border-top: 1px solid var(--ink); padding-top: 28px; display: grid; grid-template-columns: 1fr 1fr; gap: 48px;">
+      <a href="#" style="text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: var(--faint);">&larr; PREVIOUS</span>
+        <span style="font-size: 22px; font-weight: 500; line-height: 1.3;" style-hover="color: var(--accent);">The math behind Diffie&ndash;Hellman</span>
+      </a>
+      <a href="#" style="text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 8px; text-align: right;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: var(--faint);">NEXT &rarr;</span>
+        <span style="font-size: 22px; font-weight: 500; line-height: 1.3;" style-hover="color: var(--accent);">What is RSA, actually?</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer data-screen-label="Footer" style="border-top: 1px solid var(--ink); background: var(--panel-dark); color: #E8EBE8;">
+    <div data-mq="pad" style="max-width: 1060px; margin: 0 auto; padding: 18px 32px; display: flex; flex-wrap: wrap; gap: 6px 16px; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--muted);">
+      <span>&copy; 2026 Nils Hillmann &middot; dfir.89deg.com</span>
+      <span>built by hand &middot; no trackers</span>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;showToc&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Layout&quot; }
+}">
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      showToc: this.props.showToc ?? true
+    };
+  }
+}
+</script>
+</body>
+</html>

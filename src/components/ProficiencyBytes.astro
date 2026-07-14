@@ -1,0 +1,24 @@
+---
+import { proficiencyCells } from '../lib/proficiency';
+interface Props { level: number; gap?: string; }
+const { level, gap = '7px' } = Astro.props;
+const cells = proficiencyCells(level);
+---
+<div class="cells" style={`gap: 6px ${gap};`}>
+  {cells.map(c => (
+    <span class={c.on ? 'cell on' : 'cell off'}>{c.label}</span>
+  ))}
+</div>
+
+<style>
+  .cells {
+    display: flex;
+    flex-wrap: wrap;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .cell.on { color: var(--accent); }
+  .cell.off { color: var(--offcell); }
+</style>

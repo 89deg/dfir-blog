@@ -1,0 +1,194 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="About — Nils Hillmann · dfir.89deg.com">
+
+  <!-- HERO -->
+  <section class="about-hero container">
+    <p class="kicker">// ABOUT — FOR THE PERSON DOING THE HIRING</p>
+    <h1>Live, laugh, inspect every device I can find.</h1>
+    <div class="hero-row">
+      <p class="intro">I’m Nils. Not in DFIR yet — but that’s exactly where I’m headed, and this site is the paper trail. Willing to learn the hard stuff, in public: every lab here is dated and reproducible, and the write-ups explain the <em>why</em>, not just the menu clicks.</p>
+      <div class="hero-cta">
+        <a href="mailto:dfir@89deg.com" class="btn-solid">EMAIL ME →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- AT A GLANCE -->
+  <section class="container glance-section">
+    <div class="glance">
+      <div class="glance-cell">
+        <span class="glance-label">LOOKING FOR</span>
+        <span class="glance-value">Junior DFIR / SOC Analyst</span>
+      </div>
+      <div class="glance-cell">
+        <span class="glance-label">LOCATION</span>
+        <span class="glance-value">Bremen &amp; Niedersachsen</span>
+      </div>
+      <div class="glance-cell">
+        <span class="glance-label">LANGUAGES</span>
+        <span class="glance-value">German (native) · English (fluent)</span>
+      </div>
+      <div class="glance-cell">
+        <span class="glance-label">AVAILABILITY</span>
+        <span class="glance-value">Immediately</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- STORY + VERIFY -->
+  <section class="container story-section">
+    <div class="story">
+      <h2 class="section-title">WHY FORENSICS</h2>
+      <p>For over ten years I’ve been doing quality assurance for mobile apps. Then one day I stumbled across a DFIR job posting, sadly in a city far away, and caught myself wondering what that even was. I fell in love instantly and couldn’t get enough: Windows registry hives, Android live data, how cryptography actually works.</p>
+      <p>When I noticed I was spending my free evenings watching Volatility 3 tutorials on YouTube and webinars from the Magnet Virtual Summit, I knew: this is my dream job. Now I use the small time slots I have — between a full-time job and two kids — to learn and get things done. I share my achievements here, so maybe someone who shares the same interest and is willing to learn will find them.</p>
+      <p>If you’re searching for a junior DFIR or SOC analyst — public service or private sector — I’d appreciate <a href="mailto:dfir@89deg.com">hearing from you</a>.</p>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="container cta-section">
+    <div class="cta-box">
+      <div class="cta-copy">
+        <h2>The fastest way to evaluate me is a conversation.</h2>
+        <p>Send a mail, get an answer within 24 hours. Pick any artifact on this site and I'll walk you through how I got there.</p>
+      </div>
+      <div class="cta-buttons">
+        <a href="mailto:dfir@89deg.com" class="cta-mail">dfir@89deg.com</a>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  .about-hero {
+    padding-top: 72px;
+  }
+  h1 {
+    margin: 0;
+    font-size: clamp(34px, 7.5vw, 56px);
+    line-height: 1.08;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    max-width: 20ch;
+    text-wrap: balance;
+  }
+  .hero-row {
+    margin-top: 26px;
+    display: grid;
+    grid-template-columns: minmax(0, 620px) 1fr;
+    gap: 72px;
+    align-items: end;
+  }
+  .intro {
+    margin: 0;
+    font-size: 20px;
+    line-height: 1.6;
+    color: var(--dim);
+    text-wrap: pretty;
+  }
+  .hero-cta { display: flex; justify-content: flex-end; }
+  .hero-cta .btn-solid { white-space: nowrap; padding: 14px 24px; }
+  .glance-section { padding-top: 56px; }
+  .glance {
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--hairline);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .glance-cell {
+    padding: 22px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border-right: 1px solid var(--hairline);
+  }
+  .glance-cell:first-child { padding-left: 0; }
+  .glance-cell:last-child { padding-right: 0; border-right: none; }
+  .glance-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    color: var(--faint);
+  }
+  .glance-value { font-size: 17px; line-height: 1.4; }
+
+  .story-section { padding-top: 64px; }
+  .story { max-width: 660px; }
+  .section-title {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 12px;
+  }
+  .story p {
+    margin: 24px 0 0 0;
+    font-size: 18.5px;
+    line-height: 1.7;
+    color: var(--body);
+    text-wrap: pretty;
+  }
+  .story p + p { margin-top: 18px; }
+  .story a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent-bd);
+  }
+  .story a:hover { border-bottom-color: var(--accent); }
+
+  .cta-section { padding-top: 84px; padding-bottom: 84px; }
+  .cta-box {
+    border: 1px solid var(--ink);
+    background: var(--panel-dark);
+    color: #E8EBE8;
+    padding: 52px 56px;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+  .cta-copy h2 {
+    margin: 0;
+    font-size: 36px;
+    font-weight: 500;
+    line-height: 1.15;
+    max-width: 18ch;
+    text-wrap: balance;
+  }
+  .cta-copy p {
+    margin: 16px 0 0 0;
+    font-size: 17px;
+    line-height: 1.6;
+    color: #9BA59E;
+    max-width: 48ch;
+    text-wrap: pretty;
+  }
+  .cta-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+  }
+  .cta-mail {
+    background: var(--accent);
+    color: #F2F8F4;
+    padding: 14px 22px;
+    text-align: center;
+    text-decoration: none;
+    letter-spacing: 0.05em;
+  }
+  .cta-mail:hover { background: #7FC79F; color: #10241A; }
+  @media (max-width: 760px) {
+    .hero-row { grid-template-columns: 1fr; gap: 40px; }
+    .glance { grid-template-columns: 1fr 1fr; }
+    .glance-cell { padding: 16px 16px 16px 0 !important; border-right: none !important; }
+    .glance-cell:nth-child(-n+2) { border-bottom: 1px solid var(--hairline); }
+    .cta-box { grid-template-columns: 1fr; gap: 24px; padding: 32px 24px; }
+  }
+</style>

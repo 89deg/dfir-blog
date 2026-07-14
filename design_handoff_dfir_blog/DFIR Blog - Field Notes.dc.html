@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    html, body { margin: 0; padding: 0; background: var(--bg); }
+    ::selection { background: var(--shadow); }
+    :root { color-scheme: light; --bg: #FBFBF9; --ink: #161B18; --body: #2B322E; --dim: #454C48; --muted: #6B7370; --faint: #8A928D; --hairline: #E4E6E2; --hairline2: #ECEEE9; --soft: #F5F6F2; --hover: #F4F6F2; --card: #FFFFFF; --shadow: #DCEEE2; --accent: #0E7A4A; --accent-bd: #C4DFCE; --sep: #D3D8D2; --offcell: #C5CBC5; --panel-dark: #161B18; }
+    html[data-theme="dark"] { color-scheme: dark; --bg: #101413; --ink: #E4E9E5; --body: #C6CEC8; --dim: #A9B3AC; --muted: #8D978F; --faint: #707A73; --hairline: #262D29; --hairline2: #212724; --soft: #161B18; --hover: #1A201C; --card: #141917; --shadow: #14291E; --accent: #45A97A; --accent-bd: #2C4A3A; --sep: #343C37; --offcell: #3B443E; --panel-dark: #0B0F0D; }
+    @media (max-width: 760px) {
+      [data-screen-label] { padding-left: 20px !important; padding-right: 20px !important; }
+      [data-mq~="pad"] { padding-left: 20px !important; padding-right: 20px !important; }
+      [data-mq~="stack"] { grid-template-columns: 1fr !important; gap: 14px !important; }
+      [data-mq~="stack"] > * { text-align: left !important; }
+      [data-mq~="static"] { position: static !important; }
+      [data-mq~="nav"] { gap: 14px 18px !important; }
+    }
+  </style>
+  <script src="theme.js"></script>
+</helmet>
+
+<div style="min-height: 100vh; background: var(--bg); color: var(--ink); font-family: 'Newsreader', Georgia, serif; -webkit-font-smoothing: antialiased;">
+
+  <!-- ============ HEADER ============ -->
+  <header data-screen-label="Header" style="border-bottom: 1px solid var(--hairline);">
+    <div data-mq="pad" style="max-width: 1060px; margin: 0 auto; padding: 22px 32px; display: flex; align-items: baseline; justify-content: space-between; gap: 24px; flex-wrap: wrap;">
+      <div style="display: flex; align-items: baseline; gap: 14px;">
+        <a href="DFIR Blog - Home.dc.html" style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; letter-spacing: 0.04em; color: var(--ink); text-decoration: none;">NILS HILLMANN</a>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--faint);">dfir.89deg.com</span>
+      </div>
+      <nav data-mq="nav" style="display: flex; gap: 26px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.08em;">
+        <a href="DFIR Blog - Articles.dc.html" style="color: var(--ink); text-decoration: none;" style-hover="color: var(--accent);">ARTICLES</a>
+        <a href="DFIR Blog - Home.dc.html#field-notes" style="color: var(--accent); text-decoration: none;">FIELD NOTES</a>
+        <a href="DFIR Blog - Toolbox.dc.html" style="color: var(--ink); text-decoration: none;" style-hover="color: var(--accent);">TOOLBOX</a>
+        <a href="DFIR Blog - About.dc.html" style="color: var(--ink); text-decoration: none;" style-hover="color: var(--accent);">CONTACT</a>
+        <button data-theme-toggle="true" title="Toggle dark mode" style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 1; border: 1px solid var(--sep); background: transparent; color: var(--muted); padding: 4px 9px; cursor: pointer;" style-hover="border-color: var(--accent); color: var(--accent);">&#9680;</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ============ PAGE HEADER ============ -->
+  <section data-screen-label="Archive header" style="max-width: 1060px; margin: 0 auto; padding: 72px 32px 0 32px;">
+    <p style="margin: 0 0 20px 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.08em; color: var(--accent);">// FIELD NOTES — FULL LAB LOG</p>
+    <h1 style="margin: 0; font-size: clamp(34px, 7.5vw, 56px); line-height: 1.08; font-weight: 500; letter-spacing: -0.015em; max-width: 20ch; text-wrap: balance;">What I&rsquo;m actually doing, dated and unpolished.</h1>
+    <p style="margin: 22px 0 0 0; font-size: 20px; line-height: 1.55; color: var(--dim); font-style: italic; max-width: 58ch; text-wrap: pretty;">Short entries, written the same day. Dead ends included &mdash; that&rsquo;s where the learning is.</p>
+  </section>
+
+  <!-- ============ FILTER ============ -->
+  <sc-if value="{{ showFilter }}" hint-placeholder-val="{{ true }}">
+    <section data-screen-label="Filter" style="max-width: 1060px; margin: 0 auto; padding: 40px 32px 0 32px;">
+      <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; border-top: 1px solid var(--ink); padding-top: 20px;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: var(--faint); margin-right: 6px;">FILTER:</span>
+        <sc-for list="{{ tags }}" as="tg" hint-placeholder-count="6">
+          <button onClick="{{ tg.pick }}" style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.05em; padding: 6px 12px; border: 1px solid {{ tg.border }}; background: {{ tg.bg }}; color: {{ tg.col }}; cursor: pointer;" style-hover="border-color: var(--accent);">{{ tg.label }}</button>
+        </sc-for>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--faint); margin-left: auto;">{{ countLine }}</span>
+      </div>
+    </section>
+  </sc-if>
+
+  <!-- ============ LOG ============ -->
+  <section data-screen-label="Log entries" style="max-width: 1060px; margin: 0 auto; padding: 28px 32px 84px 32px;">
+    <sc-for list="{{ months }}" as="m" hint-placeholder-count="3">
+      <div style="padding-top: 34px;">
+        <div style="display: flex; align-items: baseline; gap: 16px;">
+          <h2 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; letter-spacing: 0.12em; color: var(--ink);">{{ m.label }}</h2>
+          <span style="flex: 1; border-bottom: 1px solid var(--hairline);"></span>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--faint);">{{ m.count }}</span>
+        </div>
+        <div style="display: flex; flex-direction: column;">
+          <sc-for list="{{ m.entries }}" as="n" hint-placeholder-count="4">
+            <div data-mq="stack" style="display: grid; grid-template-columns: 150px 1fr auto; gap: 28px; padding: 20px 0; border-bottom: 1px solid var(--hairline2); align-items: baseline;">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--accent);">{{ n.date }}</span>
+              <p style="margin: 0; font-size: 17.5px; line-height: 1.6; color: var(--body); max-width: 68ch; text-wrap: pretty;">{{ n.text }}</p>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; color: var(--muted); border: 1px solid var(--hairline); padding: 3px 8px; white-space: nowrap;">{{ n.tag }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-for>
+    <p style="margin: 28px 0 0 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--faint);">&gt; log started 2026-03-14 &middot; end of archive_</p>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer data-screen-label="Footer" style="border-top: 1px solid var(--ink); background: var(--panel-dark); color: #E8EBE8;">
+    <div data-mq="pad" style="max-width: 1060px; margin: 0 auto; padding: 18px 32px; display: flex; flex-wrap: wrap; gap: 6px 16px; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--muted);">
+      <span>&copy; 2026 Nils Hillmann &middot; dfir.89deg.com</span>
+      <span>built by hand &middot; no trackers</span>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;showFilter&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Layout&quot; }
+}">
+class Component extends DCLogic {
+  state = { activeTag: 'ALL' };
+
+  renderVals() {
+    const ALL = [
+      { date: '2026-07-01', month: 'JULY 2026', tag: 'MEMORY', text: 'Finished the CyberDefenders \u201cDumpMe\u201d lab. Volatility\u2019s malfind finally clicked once I stopped trusting the process list and started reading the VAD tree.' },
+      { date: '2026-06-27', month: 'JUNE 2026', tag: 'DISK', text: 'Carved JPEGs out of a raw image by hand with a hex editor before letting FTK Imager do it \u2014 knowing the magic bytes beats knowing the menu.' },
+      { date: '2026-06-24', month: 'JUNE 2026', tag: 'CRYPTO', text: 'Published the RSA article. Writing \u201cwhy is factoring hard\u201d in plain words took longer than understanding it. Good sign, probably.' },
+      { date: '2026-06-19', month: 'JUNE 2026', tag: 'MOBILE', text: 'First full Android extraction parsed with ALEAPP. The usage stats database alone is a timeline goldmine.' },
+      { date: '2026-06-15', month: 'JUNE 2026', tag: 'NETWORK', text: 'Protocol of the week: ARP. Built a tiny lab, poisoned my own cache, watched it happen in Wireshark. Uncomfortable how quiet it is.' },
+      { date: '2026-06-12', month: 'JUNE 2026', tag: 'CRYPTO', text: 'Diffie\u2013Hellman article is up. Realized mid-draft I couldn\u2019t explain why the discrete log is hard \u2014 two days of number theory later, I can.' },
+      { date: '2026-06-07', month: 'JUNE 2026', tag: 'MEMORY', text: 'Started Volatility 3 for real. Plugin names changed from vol2, half the blog posts out there are outdated \u2014 the official docs are the way.' },
+      { date: '2026-06-03', month: 'JUNE 2026', tag: 'DISK', text: 'TryHackMe disk forensics room #3 done. NTFS $MFT timestamps vs. $STANDARD_INFORMATION \u2014 timestomping is detectable if you know both exist.' },
+      { date: '2026-05-30', month: 'MAY 2026', tag: 'NETWORK', text: 'Wrote the DHCP piece. Option 55 fingerprinting was the rabbit hole of the week \u2014 the ordering of requested options is basically an OS signature.' },
+      { date: '2026-05-22', month: 'MAY 2026', tag: 'MOBILE', text: 'Compared ALEAPP output against manual SQLite queries on the same image. Found one artifact the parser missed \u2014 opened an issue upstream.' },
+      { date: '2026-05-16', month: 'MAY 2026', tag: 'DISK', text: 'First CyberDefenders blue-team challenge. Scored mid-field. Weak spot was clearly Windows registry \u2014 added it to the study queue.' },
+      { date: '2026-05-09', month: 'MAY 2026', tag: 'NETWORK', text: 'Protocol of the week: DNS over HTTPS. Great for privacy, miserable for network monitoring \u2014 wrote up what defenders lose and what\u2019s left.' },
+      { date: '2026-04-25', month: 'APRIL 2026', tag: 'DISK', text: 'Imaged my own old laptop with FTK Imager, write-blocked, verified hashes. First end-to-end acquisition without a guide open in the second monitor.' },
+      { date: '2026-04-12', month: 'APRIL 2026', tag: 'MEMORY', text: 'TryHackMe volatile memory room. Learned the hard way that you dump RAM first \u2014 rebooted a VM and lost the whole exercise. Noted forever.' }
+    ];
+
+    const TAGS = ['ALL', 'MEMORY', 'DISK', 'NETWORK', 'MOBILE', 'CRYPTO'];
+    const active = this.state.activeTag;
+    const filtered = active === 'ALL' ? ALL : ALL.filter((e) => e.tag === active);
+
+    const monthOrder = [];
+    const byMonth = {};
+    filtered.forEach((e) => {
+      if (!byMonth[e.month]) { byMonth[e.month] = []; monthOrder.push(e.month); }
+      byMonth[e.month].push(e);
+    });
+    const months = monthOrder.map((label) => ({
+      label,
+      count: byMonth[label].length + (byMonth[label].length === 1 ? ' entry' : ' entries'),
+      entries: byMonth[label]
+    }));
+
+    const tags = TAGS.map((label) => {
+      const on = label === active;
+      return {
+        label,
+        col: on ? '#F2F8F4' : 'var(--dim)',
+        bg: on ? 'var(--accent)' : 'transparent',
+        border: on ? 'var(--accent)' : 'var(--sep)',
+        pick: () => this.setState({ activeTag: label })
+      };
+    });
+
+    return {
+      months,
+      tags,
+      countLine: filtered.length + ' of ' + ALL.length + ' entries',
+      showFilter: this.props.showFilter ?? true
+    };
+  }
+}
+</script>
+</body>
+</html>

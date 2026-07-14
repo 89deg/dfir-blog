@@ -1,0 +1,247 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const cases = (await getCollection('cases'))
+  .sort((a, b) => b.data.date.localeCompare(a.data.date) || b.data.num.localeCompare(a.data.num));
+
+function stepNum(i: number) { return String(i + 1).padStart(2, '0'); }
+---
+<BaseLayout title="Case Files — dfir.89deg.com">
+
+  <section class="page-head container">
+    <p class="kicker">// CASE FILES — FELDVERSUCHE</p>
+    <h1>Forget Alice and Bob — we're going hands-on.</h1>
+    <p class="lede">The textbook characters can keep their perfect protocols. Here it's self-built scenarios run end to end: a brief, a device on the bench, the tools I reached for, and every step in between.</p>
+    <div class="disclaimer">All cases are lab scenarios on my own or lab-issued devices. No real casework, no third-party data. Procedures follow chain-of-custody discipline anyway — that’s the point.</div>
+  </section>
+
+  <section class="container case-section">
+    {cases.length === 0 ? (
+      <p class="empty">&gt; no cases on file yet · first field test in preparation_</p>
+    ) : cases.map(c => (
+      <article class="case">
+
+        <div class="case-head stack-mobile">
+          <div class="case-title-wrap">
+            <span class="case-num">{c.data.num}</span>
+            <h2>{c.data.title}</h2>
+          </div>
+          <div class="case-meta">
+            <span>{c.data.date}</span>
+            <span class="case-status">{c.data.status}</span>
+          </div>
+        </div>
+
+        <div class="case-grid stack-mobile">
+          <div class="col">
+            <span class="col-label">THE BRIEF</span>
+            <p class="brief">“{c.data.brief}”</p>
+          </div>
+          <div class="col">
+            <span class="col-label">DEVICE UNDER EXAMINATION</span>
+            <div class="device-list">
+              {c.data.device.map(d => (
+                <div class="device-row">
+                  <span class="device-k">{d.k}</span>
+                  <span class="device-v">{d.v}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div class="col">
+            <span class="col-label">TOOLS USED</span>
+            <div class="tool-chips">
+              {c.data.tools.map(t => (
+                <a href="/toolbox" class="tool-chip">{t}</a>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div class="procedure">
+          <span class="col-label">PROCEDURE</span>
+          <div class="steps">
+            {c.data.steps.map((s, i) => (
+              <div class="step">
+                <span class="step-n">{stepNum(i)}</span>
+                <p>{s}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="outcome">
+          <span class="outcome-label">{c.data.status === 'OPEN' ? '› STATUS' : '✓ OUTCOME'}</span>
+          <span class="outcome-text">{c.data.outcome}</span>
+        </div>
+
+      </article>
+    ))}
+  </section>
+
+</BaseLayout>
+
+<style>
+  .page-head { padding-top: 72px; }
+  h1 {
+    margin: 0;
+    font-size: clamp(34px, 7.5vw, 56px);
+    line-height: 1.08;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    max-width: 22ch;
+    text-wrap: balance;
+  }
+  .lede {
+    margin: 22px 0 0 0;
+    font-size: 20px;
+    line-height: 1.55;
+    color: var(--dim);
+    font-style: italic;
+    max-width: 58ch;
+    text-wrap: pretty;
+  }
+  .disclaimer {
+    margin-top: 36px;
+    border: 1px solid var(--hairline);
+    background: var(--soft);
+    padding: 16px 22px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  .case-section { padding-top: 28px; padding-bottom: 84px; }
+  .empty {
+    margin: 32px 0 0 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--faint);
+  }
+
+  .case {
+    border-top: 1px solid var(--ink);
+    margin-top: 40px;
+    padding-top: 18px;
+  }
+  .case-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px 40px;
+    align-items: baseline;
+  }
+  .case-title-wrap {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .case-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .case-head h2 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+  .case-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    color: var(--faint);
+    white-space: nowrap;
+  }
+  .case-status {
+    color: var(--accent);
+    border: 1px solid var(--accent-bd);
+    padding: 2px 8px;
+  }
+
+  .case-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) 200px;
+    gap: 40px;
+    padding: 26px 0 8px 0;
+  }
+  .col { display: flex; flex-direction: column; gap: 8px; }
+  .col-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    color: var(--faint);
+  }
+  .brief {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.6;
+    font-style: italic;
+    color: var(--body);
+    text-wrap: pretty;
+  }
+  .device-list { display: flex; flex-direction: column; }
+  .device-row {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    padding: 5px 0;
+    border-bottom: 1px dotted var(--hairline);
+  }
+  .device-k { color: var(--faint); white-space: nowrap; }
+  .device-v { margin-left: auto; color: var(--body); text-align: right; }
+  .tool-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tool-chip {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    background: var(--soft);
+    border: 1px solid var(--hairline);
+    padding: 4px 9px;
+    text-decoration: none;
+  }
+  .tool-chip:hover { color: var(--accent); border-color: var(--accent-bd); }
+
+  .procedure { padding: 18px 0 6px 0; }
+  .steps { display: flex; flex-direction: column; margin-top: 10px; }
+  .step {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: 16px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--hairline2);
+    align-items: baseline;
+  }
+  .step-n {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .step p {
+    margin: 0;
+    font-size: 16.5px;
+    line-height: 1.55;
+    color: var(--dim);
+    text-wrap: pretty;
+  }
+
+  .outcome {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 16px 0 26px 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+  }
+  .outcome-label { color: var(--accent); font-weight: 600; }
+  .outcome-text { color: var(--body); }
+</style>

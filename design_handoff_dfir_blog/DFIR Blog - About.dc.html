@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    html, body { margin: 0; padding: 0; background: var(--bg); }
+    ::selection { background: var(--shadow); }
+    :root { color-scheme: light; --bg: #FBFBF9; --ink: #161B18; --body: #2B322E; --dim: #454C48; --muted: #6B7370; --faint: #8A928D; --hairline: #E4E6E2; --hairline2: #ECEEE9; --soft: #F5F6F2; --hover: #F4F6F2; --card: #FFFFFF; --shadow: #DCEEE2; --accent: #0E7A4A; --accent-bd: #C4DFCE; --sep: #D3D8D2; --offcell: #C5CBC5; --panel-dark: #161B18; }
+    html[data-theme="dark"] { color-scheme: dark; --bg: #101413; --ink: #E4E9E5; --body: #C6CEC8; --dim: #A9B3AC; --muted: #8D978F; --faint: #707A73; --hairline: #262D29; --hairline2: #212724; --soft: #161B18; --hover: #1A201C; --card: #141917; --shadow: #14291E; --accent: #45A97A; --accent-bd: #2C4A3A; --sep: #343C37; --offcell: #3B443E; --panel-dark: #0B0F0D; }
+    @media (max-width: 760px) {
+      [data-screen-label] { padding-left: 20px !important; padding-right: 20px !important; }
+      [data-mq~="pad"] { padding-left: 20px !important; padding-right: 20px !important; }
+      [data-mq~="stack"] { grid-template-columns: 1fr !important; gap: 14px !important; }
+      [data-mq~="stack"] > * { text-align: left !important; }
+      [data-mq~="static"] { position: static !important; }
+      [data-mq~="nav"] { gap: 14px 18px !important; }
+      [data-mq~="glance"] { grid-template-columns: 1fr 1fr !important; }
+      [data-mq~="glance"] > div { border-right: none !important; padding: 16px 16px 16px 0 !important; }
+      [data-mq~="glance"] > div:nth-child(-n+2) { border-bottom: 1px solid var(--hairline); }
+      [data-mq~="cta"] { padding: 32px 24px !important; }
+      [data-mq~="stack-loose"] { grid-template-columns: 1fr !important; gap: 40px !important; }
+    }
+    image-slot { display: block; width: 100%; height: 100%; }
+  </style>
+  <script src="theme.js"></script>
+</helmet>
+
+<div style="min-height: 100vh; background: var(--bg); color: var(--ink); font-family: 'Newsreader', Georgia, serif; -webkit-font-smoothing: antialiased;">
+
+  <!-- ============ HEADER ============ -->
+  <header data-screen-label="Header" style="border-bottom: 1px solid var(--hairline);">
+    <div data-mq="pad" style="max-width: 1060px; margin: 0 auto; padding: 22px 32px; display: flex; align-items: baseline; justify-content: space-between; gap: 24px; flex-wrap: wrap;">
+      <div style="display: flex; align-items: baseline; gap: 14px;">
+        <a href="DFIR Blog - Home.dc.html" style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; letter-spacing: 0.04em; color: var(--ink); text-decoration: none;">NILS HILLMANN</a>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--faint);">dfir.89deg.com</span>
+      </div>
+      <nav data-mq="nav" style="display: flex; gap: 26px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.08em;">
+        <a href="DFIR Blog - Articles.dc.html" style="color: var(--ink); text-decoration: none;" style-hover="color: var(--accent);">ARTICLES</a>
+        <a href="DFIR Blog - Field Notes.dc.html" style="color: var(--ink); text-decoration: none;" style-hover="color: var(--accent);">FIELD NOTES</a>
+        <a href="DFIR Blog - Toolbox.dc.html" style="color: var(--ink); text-decoration: none;" style-hover="color: var(--accent);">TOOLBOX</a>
+        <a href="DFIR Blog - About.dc.html" style="color: var(--accent); text-decoration: none;">CONTACT</a>
+        <button data-theme-toggle="true" title="Toggle dark mode" style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 1; border: 1px solid var(--sep); background: transparent; color: var(--muted); padding: 4px 9px; cursor: pointer;" style-hover="border-color: var(--accent); color: var(--accent);">&#9680;</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section data-screen-label="About hero" data-mq="stack-loose" style="max-width: 1060px; margin: 0 auto; padding: 72px 32px 0 32px; display: grid; grid-template-columns: 1fr 300px; gap: 64px; align-items: start;">
+    <div>
+      <p style="margin: 0 0 20px 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.08em; color: var(--accent);">// ABOUT — FOR THE PERSON DOING THE HIRING</p>
+      <h1 style="margin: 0; font-size: clamp(34px, 7.5vw, 54px); line-height: 1.08; font-weight: 500; letter-spacing: -0.015em; max-width: 18ch; text-wrap: balance;">I&rsquo;m Nils. I want to do forensics for a living &mdash; so I already do it every day.</h1>
+      <p style="margin: 24px 0 0 0; font-size: 20px; line-height: 1.6; color: var(--dim); max-width: 56ch; text-wrap: pretty;">No security job title yet &mdash; that&rsquo;s why you&rsquo;re reading this. What I do have is a public, dated record of lab work: disk images acquired and verified, memory dumps analyzed, packet captures taken apart, and write-ups that explain the <em>why</em>, not just the menu clicks.</p>
+      <div style="margin-top: 32px; display: flex; gap: 14px; flex-wrap: wrap;">
+        <a href="mailto:nils@89deg.com" style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.05em; background: var(--accent); color: #F2F8F4; padding: 13px 22px; text-decoration: none;" style-hover="background: var(--panel-dark);">EMAIL ME &rarr;</a>
+        <a href="#" style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.05em; border: 1px solid var(--ink); color: var(--ink); padding: 12px 22px; text-decoration: none;" style-hover="background: var(--panel-dark); color: #F2F8F4;">DOWNLOAD CV (PDF)</a>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 14px;">
+      <div style="width: 300px; height: 360px; border: 1px solid var(--ink); box-shadow: 5px 5px 0 0 var(--shadow); background: var(--card);">
+        <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="portrait" shape="rect" placeholder="portrait photo" style="width: 100%; height: 100%;" hint-size="300px,360px"></x-import>
+      </div>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--faint);">fig. 1 — the analyst in question</span>
+    </div>
+  </section>
+
+  <!-- ============ AT A GLANCE ============ -->
+  <section data-screen-label="At a glance" style="max-width: 1060px; margin: 0 auto; padding: 64px 32px 0 32px;">
+    <div data-mq="glance" style="border-top: 1px solid var(--ink); border-bottom: 1px solid var(--hairline); display: grid; grid-template-columns: repeat(4, 1fr);">
+      <div style="padding: 22px 24px 22px 0; border-right: 1px solid var(--hairline); display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; color: var(--faint);">LOOKING FOR</span>
+        <span style="font-size: 17px; line-height: 1.4;">Junior DFIR / SOC Analyst</span>
+      </div>
+      <div style="padding: 22px 24px; border-right: 1px solid var(--hairline); display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; color: var(--faint);">LOCATION</span>
+        <span style="font-size: 17px; line-height: 1.4;">Germany &middot; remote or hybrid</span>
+      </div>
+      <div style="padding: 22px 24px; border-right: 1px solid var(--hairline); display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; color: var(--faint);">LANGUAGES</span>
+        <span style="font-size: 17px; line-height: 1.4;">German (native) &middot; English (fluent)</span>
+      </div>
+      <div style="padding: 22px 0 22px 24px; display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; color: var(--faint);">AVAILABILITY</span>
+        <span style="font-size: 17px; line-height: 1.4;">Immediately</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STORY + VERIFY ============ -->
+  <section data-screen-label="Background" data-mq="stack-loose" style="max-width: 1060px; margin: 0 auto; padding: 64px 32px 0 32px; display: grid; grid-template-columns: minmax(0, 620px) 1fr; gap: 72px; align-items: start;">
+    <div>
+      <h2 style="margin: 0; font-size: 15px; font-weight: 600; font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.1em; border-bottom: 1px solid var(--ink); padding-bottom: 12px;">WHY FORENSICS</h2>
+      <p style="margin: 24px 0 0 0; font-size: 18.5px; line-height: 1.7; color: var(--body); text-wrap: pretty;">It started with a question I couldn&rsquo;t let go of: when you delete a file, where does it <em>go</em>? The answer &mdash; mostly nowhere &mdash; pulled me into filesystems, then memory, then networks. Forensics turned out to be the discipline where curiosity is the job description: every image is a crime scene where the evidence can&rsquo;t lie, only hide.</p>
+      <p style="margin: 18px 0 0 0; font-size: 18.5px; line-height: 1.7; color: var(--body); text-wrap: pretty;">I learn in public on purpose. Every claim on this site is dated and reproducible &mdash; the <a href="DFIR Blog - Field Notes.dc.html" style="color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent-bd);" style-hover="border-bottom-color: var(--accent);">field notes</a> include the dead ends, and the <a href="DFIR Blog - Home.dc.html#toolbox" style="color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent-bd);" style-hover="border-bottom-color: var(--accent);">toolbox scores</a> are backed by named challenges, not vibes. If I write that I know a tool 4/10, that&rsquo;s a promise about the other 6 too.</p>
+      <p style="margin: 18px 0 0 0; font-size: 18.5px; line-height: 1.7; color: var(--body); text-wrap: pretty;">What I&rsquo;d bring on day one: solid fundamentals in crypto and network protocols, hands-on habits with the standard toolchain, documentation discipline &mdash; and the kind of stubbornness that reads the RFC when the blog post doesn&rsquo;t add up.</p>
+
+      <h2 style="margin: 56px 0 0 0; font-size: 15px; font-weight: 600; font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.1em; border-bottom: 1px solid var(--ink); padding-bottom: 12px;">CURRENTLY WORKING ON</h2>
+      <div style="margin-top: 8px; display: flex; flex-direction: column;">
+        <div style="display: grid; grid-template-columns: 110px 1fr; gap: 24px; padding: 18px 0; border-bottom: 1px solid var(--hairline2); align-items: baseline;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--accent);">NOW</span>
+          <span style="font-size: 17.5px; line-height: 1.55; color: var(--body);">TryHackMe SOC Level 1 path &mdash; 70% through, finishing the SIEM modules.</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 110px 1fr; gap: 24px; padding: 18px 0; border-bottom: 1px solid var(--hairline2); align-items: baseline;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--accent);">NOW</span>
+          <span style="font-size: 17.5px; line-height: 1.55; color: var(--body);">One CyberDefenders blue-team challenge per month, with a full write-up here.</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 110px 1fr; gap: 24px; padding: 18px 0; border-bottom: 1px solid var(--hairline2); align-items: baseline;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--faint);">NEXT</span>
+          <span style="font-size: 17.5px; line-height: 1.55; color: var(--body);">Windows registry forensics &mdash; my declared weak spot from the May challenge.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- VERIFY SIDEBAR -->
+    <aside data-mq="static" style="border: 1px solid var(--ink); background: var(--card); box-shadow: 5px 5px 0 0 var(--shadow); padding: 26px 28px; position: sticky; top: 32px;">
+      <h2 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.1em; color: var(--accent);">DON&rsquo;T TRUST — VERIFY</h2>
+      <p style="margin: 12px 0 0 0; font-size: 15.5px; line-height: 1.55; color: var(--muted); font-style: italic;">Everything I claim, you can check:</p>
+      <div style="margin-top: 18px; display: flex; flex-direction: column; gap: 13px; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px;">
+        <a href="https://tryhackme.com/" style="color: var(--ink); text-decoration: none; display: flex; justify-content: space-between; gap: 12px;" style-hover="color: var(--accent);"><span>TryHackMe profile</span><span style="color: var(--accent);">&rarr;</span></a>
+        <a href="https://cyberdefenders.org/" style="color: var(--ink); text-decoration: none; display: flex; justify-content: space-between; gap: 12px;" style-hover="color: var(--accent);"><span>CyberDefenders profile</span><span style="color: var(--accent);">&rarr;</span></a>
+        <a href="https://github.com/" style="color: var(--ink); text-decoration: none; display: flex; justify-content: space-between; gap: 12px;" style-hover="color: var(--accent);"><span>GitHub</span><span style="color: var(--accent);">&rarr;</span></a>
+        <a href="DFIR Blog - Field Notes.dc.html" style="color: var(--ink); text-decoration: none; display: flex; justify-content: space-between; gap: 12px;" style-hover="color: var(--accent);"><span>Full lab log</span><span style="color: var(--accent);">&rarr;</span></a>
+      </div>
+      <div style="margin-top: 22px; border-top: 1px solid var(--hairline); padding-top: 18px; font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--faint); line-height: 1.7;">Prefer a walkthrough? I&rsquo;m happy to screen-share any lab on this site and narrate my process live.</div>
+    </aside>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section data-screen-label="Contact CTA" style="max-width: 1060px; margin: 0 auto; padding: 84px 32px 84px 32px;">
+    <div data-mq="stack cta" style="border: 1px solid var(--ink); background: var(--panel-dark); color: #E8EBE8; padding: 52px 56px; display: grid; grid-template-columns: 1.4fr 1fr; gap: 48px; align-items: center;">
+      <div>
+        <h2 style="margin: 0; font-size: 36px; font-weight: 500; line-height: 1.15; max-width: 18ch; text-wrap: balance;">The fastest way to evaluate me is a conversation.</h2>
+        <p style="margin: 16px 0 0 0; font-size: 17px; line-height: 1.6; color: #9BA59E; max-width: 48ch; text-wrap: pretty;">Send a mail, get an answer within 24 hours. Pick any artifact on this site and I&rsquo;ll walk you through how I got there.</p>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 14px; font-family: 'IBM Plex Mono', monospace; font-size: 13px;">
+        <a href="mailto:nils@89deg.com" style="background: var(--accent); color: #F2F8F4; padding: 14px 22px; text-align: center; text-decoration: none; letter-spacing: 0.05em;" style-hover="background: #7FC79F; color: #10241A;">nils@89deg.com</a>
+        <a href="#" style="border: 1px solid #3A423C; color: #E8EBE8; padding: 13px 22px; text-align: center; text-decoration: none; letter-spacing: 0.05em;" style-hover="border-color: #7FC79F; color: #7FC79F;">DOWNLOAD CV (PDF)</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer data-screen-label="Footer" style="border-top: 1px solid var(--ink); background: var(--panel-dark); color: #E8EBE8;">
+    <div data-mq="pad" style="max-width: 1060px; margin: 0 auto; padding: 18px 32px; display: flex; flex-wrap: wrap; gap: 6px 16px; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--muted);">
+      <span>&copy; 2026 Nils Hillmann &middot; dfir.89deg.com</span>
+      <span>built by hand &middot; no trackers</span>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+</body>
+</html>
