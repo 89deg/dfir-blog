@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="404 — Nils Hillmann · dfir.89deg.com">
+
+  <section class="notfound container">
+    <p class="kicker">// HTTP 404 — ARTIFACT NOT FOUND</p>
+    <h1>This evidence doesn't exist.</h1>
+    <p class="lede">The page you're looking for was moved, deleted, or never acquired in the first place. Check your chain of custody — or start over at the index.</p>
+    <div class="actions">
+      <a href="/" class="btn-back">← BACK TO THE LAB</a>
+      <a href="/articles" class="link-alt">browse the write-ups instead →</a>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  .notfound {
+    padding-top: 96px;
+    padding-bottom: 120px;
+  }
+  h1 {
+    margin: 0;
+    font-size: clamp(34px, 7.5vw, 56px);
+    line-height: 1.08;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    max-width: 20ch;
+    text-wrap: balance;
+  }
+  .lede {
+    margin: 20px 0 0 0;
+    max-width: 560px;
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--dim);
+    text-wrap: pretty;
+  }
+  .actions {
+    margin-top: 36px;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    flex-wrap: wrap;
+  }
+  .btn-back {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+    text-decoration: none;
+    border: 1px solid var(--ink);
+    padding: 12px 20px;
+  }
+  .btn-back:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .link-alt {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    text-decoration: none;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .link-alt:hover { color: var(--accent); border-bottom-color: var(--accent); }
+</style>

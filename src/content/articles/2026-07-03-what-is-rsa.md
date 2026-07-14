@@ -11,13 +11,13 @@ Let's assume we've got two persons, Bob and Alice, sitting in a row of seats. Th
 
 ## History of RSA
 
-In 1977, Ron **R**ivest, Adi **S**hamir and Leonard **A**dleman had the idea of a one-way function that couldn't be reversed and could therefore be used to encrypt messages. It took months of hard work to get the right algorithm. 20 years later, papers were leaked showing that 4 years earlier, in 1973, the mathematician Clifford Cocks had already created a similar algorithm for the British secret service GCHQ.
+In 1977, Ron **R**ivest, Adi **S**hamir and Leonard **A**dleman had the idea of a one-way function that couldn't be reversed and could therefore be used to encrypt messages. It took months of hard work to get the right algorithm. 20 years later, GCHQ declassified papers showing that 4 years earlier, in 1973, the mathematician Clifford Cocks had already created a similar algorithm for the British secret service.
 
 ## How does RSA work?
 
 RSA is an asymmetric encryption, which means you've got different keys for encryption and decryption. To achieve that, it makes use of a system called a "one-way function." That basically means a human or machine is only able to calculate something in one direction and not able to reverse it. So to get the idea, let's take the number 13 and multiply it by 17. We get the number 221, and even though that's not easy for most humans to calculate in their head, with simple math skills you can easily get there — and of course every PC can. But if I tell you the number is 221, what were the two multipliers that made it? We get to a point where even for a PC it's only possible by brute-forcing tons of combinations.
 
-Now assume we've got the number 3432934082492 — what were the two multipliers? I think you got the idea!
+Now assume we've got the number 1000036000099 — what were the two multipliers? I think you got the idea!
 
 So it all relies on the fact that you can give a person — well, actually you can give it to every person in the world, it's a public key after all — the variable n (that's the product of the secret prime numbers p and q) and e (the exponent). With those, the person can calculate an encrypted message that only the person with the **private** key can decrypt. And as long as we don't have quantum computers, or a mathematician finds a new way to "not make it one-way anymore," it is not possible for anyone to decrypt it. But like all things, there are a few exceptions that make it "breakable" — we'll get to that a little bit later.
 
