@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import LangToggle from '../components/LangToggle.astro';
 // English translation of the eRecht24-generated Datenschutzerklärung,
 // adapted to this site: GitHub Pages hosting (incl. US/DPF note),
 // locally hosted fonts, localStorage theme preference. No tracking, no cookies.
@@ -8,6 +9,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   <section class="privacy container">
     <p class="kicker">// PRIVACY POLICY — INFORMATION PURSUANT TO ART. 13 GDPR</p>
+    <LangToggle href="/de/datenschutz" label="DE → DIESE SEITE AUF DEUTSCH" />
     <h1>Privacy Policy</h1>
 
     <h2>1. Data protection at a glance</h2>
@@ -138,7 +140,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     max-width: 860px;
   }
   h1 {
-    margin: 0;
+    margin: 24px 0 0 0;
     font-size: clamp(34px, 7.5vw, 56px);
     line-height: 1.08;
     font-weight: 500;

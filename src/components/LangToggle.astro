@@ -1,0 +1,24 @@
+---
+// Small language switcher shown only on pages that exist in both languages.
+interface Props {
+  href: string;
+  label: string;
+}
+const { href, label } = Astro.props;
+---
+<a class="lang-toggle" href={href}>{label}</a>
+
+<style>
+  .lang-toggle {
+    display: inline-block;
+    margin-top: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-decoration: none;
+    border: 1px solid var(--sep);
+    padding: 5px 10px;
+  }
+  .lang-toggle:hover { color: var(--accent); border-color: var(--accent); }
+</style>

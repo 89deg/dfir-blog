@@ -1,12 +1,18 @@
 ---
 // Simple bottom bar; the About/Home pages have their own dark CTA above this.
+// Legal links follow the page language (/de/ pages get the German versions).
+const de = Astro.url.pathname.startsWith('/de');
+const imprintHref = de ? '/de/impressum' : '/impressum';
+const privacyHref = de ? '/de/datenschutz' : '/datenschutz';
+const imprintLabel = de ? 'Impressum' : 'Imprint';
+const privacyLabel = de ? 'Datenschutz' : 'Privacy';
 ---
 <footer class="site-footer">
   <div class="container inner">
     <span>© 2026 Nils Hillmann · dfir.89deg.com</span>
     <nav class="foot-links">
-      <a href="/impressum">Imprint</a>
-      <a href="/datenschutz">Privacy</a>
+      <a href={imprintHref}>{imprintLabel}</a>
+      <a href={privacyHref}>{privacyLabel}</a>
       <span>built with love in worpswede — the real life shire</span>
     </nav>
   </div>

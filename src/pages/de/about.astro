@@ -1,18 +1,18 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import LangToggle from '../components/LangToggle.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LangToggle from '../../components/LangToggle.astro';
 ---
-<BaseLayout title="About — Nils Hillmann · dfir.89deg.com">
+<BaseLayout title="Über mich — Nils Hillmann · dfir.89deg.com" lang="de">
 
   <!-- HERO -->
   <section class="about-hero container">
-    <p class="kicker">// ABOUT — FOR THE PERSON DOING THE HIRING</p>
-    <LangToggle href="/de/about" label="DE → DIESE SEITE AUF DEUTSCH" />
+    <p class="kicker">// ÜBER MICH — FÜR DIE PERSON, DIE EINSTELLT</p>
+    <LangToggle href="/about" label="EN → THIS PAGE IN ENGLISH" />
     <h1>Live, laugh, inspect every device I can find.</h1>
     <div class="hero-row">
-      <p class="intro">I’m Nils. Not in DFIR yet — but that’s exactly where I’m headed, and this site is the paper trail. Willing to learn the hard stuff, in public: every lab here is dated and reproducible, and the write-ups explain the <em>why</em>, not just the menu clicks.</p>
+      <p class="intro">Ich bin Nils. Noch nicht in der DFIR — aber genau da will ich hin, und diese Seite ist die Beweiskette dahin. Bereit, das harte Zeug zu lernen, und zwar öffentlich: Jedes Lab hier ist datiert und reproduzierbar, und die Write-ups erklären das <em>Warum</em>, nicht nur die Klicks im Menü.</p>
       <div class="hero-cta">
-        <a href="mailto:dfir@89deg.com" class="btn-solid">EMAIL ME →</a>
+        <a href="mailto:dfir@89deg.com" class="btn-solid">SCHREIB MIR →</a>
       </div>
     </div>
   </section>
@@ -21,31 +21,31 @@ import LangToggle from '../components/LangToggle.astro';
   <section class="container glance-section">
     <div class="glance">
       <div class="glance-cell">
-        <span class="glance-label">LOOKING FOR</span>
+        <span class="glance-label">SUCHE</span>
         <span class="glance-value">Junior DFIR / SOC Analyst</span>
       </div>
       <div class="glance-cell">
-        <span class="glance-label">LOCATION</span>
+        <span class="glance-label">STANDORT</span>
         <span class="glance-value">Bremen &amp; Niedersachsen</span>
       </div>
       <div class="glance-cell">
-        <span class="glance-label">LANGUAGES</span>
-        <span class="glance-value">German (native) · English (fluent)</span>
+        <span class="glance-label">SPRACHEN</span>
+        <span class="glance-value">Deutsch (Muttersprache) · Englisch (fließend)</span>
       </div>
       <div class="glance-cell">
-        <span class="glance-label">AVAILABILITY</span>
-        <span class="glance-value">Immediately</span>
+        <span class="glance-label">VERFÜGBAR</span>
+        <span class="glance-value">Ab sofort</span>
       </div>
     </div>
   </section>
 
-  <!-- STORY + VERIFY -->
+  <!-- STORY -->
   <section class="container story-section">
     <div class="story">
-      <h2 class="section-title">WHY FORENSICS</h2>
-      <p>For over ten years I’ve been doing quality assurance for mobile apps. Then one day I stumbled across a DFIR job posting, sadly in a city far away, and caught myself wondering what that even was. I fell in love instantly and couldn’t get enough: Windows registry hives, Android live data, how cryptography actually works.</p>
-      <p>When I noticed I was spending my free evenings watching Volatility 3 tutorials on YouTube and webinars from the Magnet Virtual Summit, I knew: this is my dream job. Now I use the small time slots I have — between a full-time job and two kids — to learn and get things done. I share my achievements here, so maybe someone who shares the same interest and is willing to learn will find them.</p>
-      <p>If you’re searching for a junior DFIR or SOC analyst — public service or private sector — I’d appreciate <a href="mailto:dfir@89deg.com">hearing from you</a>.</p>
+      <h2 class="section-title">WARUM FORENSIK</h2>
+      <p>Über zehn Jahre lang habe ich Qualitätssicherung für mobile Apps gemacht. Dann bin ich eines Tages über eine DFIR-Stellenanzeige gestolpert — leider in einer weit entfernten Stadt — und habe mich gefragt, was das überhaupt ist. Ich habe mich sofort verliebt und kam nicht mehr los: Windows-Registry-Hives, Android-Live-Daten, wie Kryptografie wirklich funktioniert.</p>
+      <p>Als ich merkte, dass ich meine freien Abende damit verbrachte, Volatility-3-Tutorials auf YouTube und Webinare vom Magnet Virtual Summit zu schauen, wusste ich: Das ist mein Traumjob. Jetzt nutze ich die kleinen Zeitfenster, die ich habe — zwischen Vollzeitjob und zwei Kindern — um zu lernen und Dinge fertigzubringen. Ich teile meine Ergebnisse hier, damit vielleicht jemand, der das gleiche Interesse teilt und bereit ist zu lernen, sie findet.</p>
+      <p>Wenn Sie einen Junior DFIR- oder SOC-Analysten suchen — öffentlicher Dienst oder Privatwirtschaft — würde ich mich freuen, <a href="mailto:dfir@89deg.com">von Ihnen zu hören</a>.</p>
     </div>
   </section>
 
@@ -53,8 +53,8 @@ import LangToggle from '../components/LangToggle.astro';
   <section class="container cta-section">
     <div class="cta-box">
       <div class="cta-copy">
-        <h2>The fastest way to evaluate me is a conversation.</h2>
-        <p>Send a mail, get an answer within 24 hours. Pick any artifact on this site and I'll walk you through how I got there.</p>
+        <h2>Am schnellsten überzeugt ein Gespräch.</h2>
+        <p>Schreib eine Mail, bekomm eine Antwort innerhalb von 24 Stunden. Pick dir ein beliebiges Artefakt auf dieser Seite und ich führe dich durch, wie ich dahin gekommen bin.</p>
       </div>
       <div class="cta-buttons">
         <a href="mailto:dfir@89deg.com" class="cta-mail">dfir@89deg.com</a>

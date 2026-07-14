@@ -1,56 +1,56 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import LangToggle from '../components/LangToggle.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LangToggle from '../../components/LangToggle.astro';
 ---
-<BaseLayout title="Imprint — Nils Hillmann · dfir.89deg.com">
+<BaseLayout title="Impressum — Nils Hillmann · dfir.89deg.com" lang="de">
 
   <section class="imprint container">
-    <p class="kicker">// IMPRINT — INFORMATION PURSUANT TO § 5 DDG</p>
-    <LangToggle href="/de/impressum" label="DE → DIESE SEITE AUF DEUTSCH" />
-    <h1>Imprint</h1>
+    <p class="kicker">// IMPRESSUM — ANGABEN GEMÄSS § 5 DDG</p>
+    <LangToggle href="/impressum" label="EN → THIS PAGE IN ENGLISH" />
+    <h1>Impressum</h1>
 
     <div class="rows">
       <div class="row">
-        <span class="label">PROVIDER</span>
+        <span class="label">ANBIETER</span>
         <div class="value">
           <p>Nils Hillmann 89deg</p>
-          <p>Owner: Nils Hillmann</p>
+          <p>Inhaber: Nils Hillmann</p>
           <p>Rabienstr. 63</p>
-          <p>27726 Worpswede, Germany</p>
+          <p>27726 Worpswede, Deutschland</p>
         </div>
       </div>
 
       <div class="row">
-        <span class="label">CONTACT</span>
+        <span class="label">KONTAKT</span>
         <div class="value">
-          <p>Phone: <a href="tel:+4915229536729">+49 152 29536729</a></p>
-          <p>Email: <a href="mailto:dfir@89deg.com">dfir@89deg.com</a></p>
+          <p>Telefon: <a href="tel:+4915229536729">+49 152 29536729</a></p>
+          <p>E-Mail: <a href="mailto:dfir@89deg.com">dfir@89deg.com</a></p>
         </div>
       </div>
 
       <div class="row">
-        <span class="label">VAT ID</span>
+        <span class="label">UMSATZSTEUER-ID</span>
         <div class="value">
-          <p>VAT identification number pursuant to § 27 a of the German VAT Act (Umsatzsteuergesetz): DE462430091</p>
+          <p>Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz: DE462430091</p>
         </div>
       </div>
 
       <div class="row">
-        <span class="label">TRADE LICENCE</span>
+        <span class="label">GEWERBEANMELDUNG</span>
         <div class="value">
-          <p>The trade licence under the German Trade Regulation Act (Gewerbeordnung, GewO) was issued on 1 April 2026 by: Ordnungsamt – Gemeinde Worpswede (municipal regulatory office).</p>
+          <p>Die Gewerbeerlaubnis nach der Gewerbeordnung (GewO) wurde am 1. April 2026 erteilt durch: Ordnungsamt – Gemeinde Worpswede.</p>
         </div>
       </div>
 
       <div class="row">
-        <span class="label">CONSUMER DISPUTE RESOLUTION</span>
+        <span class="label">VERBRAUCHER­STREITBEILEGUNG</span>
         <div class="value">
-          <p>We are neither willing nor obliged to participate in dispute resolution proceedings before a consumer arbitration board.</p>
+          <p>Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
         </div>
       </div>
     </div>
 
-    <p class="source">Source: <a href="https://www.e-recht24.de/impressum-generator.html" rel="nofollow noopener" target="_blank">e-recht24.de/impressum-generator.html</a></p>
+    <p class="source">Quelle: <a href="https://www.e-recht24.de/impressum-generator.html" rel="nofollow noopener" target="_blank">e-recht24.de/impressum-generator.html</a></p>
   </section>
 
 </BaseLayout>

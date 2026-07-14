@@ -12,12 +12,13 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description?: string;
+  lang?: string;
 }
-const { title, description = "Nils Hillmann's DFIR portfolio blog — learning digital forensics in public." } = Astro.props;
+const { title, description = "Nils Hillmann's DFIR portfolio blog — learning digital forensics in public.", lang = 'en' } = Astro.props;
 const currentPath = Astro.url.pathname;
 ---
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
