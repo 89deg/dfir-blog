@@ -24,20 +24,25 @@ const notes = defineCollection({
   })
 });
 
+// tier: honest, job-anchored self-assessment (3 = working proficiency,
+// 2 = hands-on/learning, 1 = explored). difficulty comes from the platform,
+// not from us; 'lab' marks own lab cases.
+const toolDifficulty = z.enum(['easy', 'medium', 'hard', 'lab', 'in progress']);
+
 const tools = defineCollection({
   type: 'content',
   schema: z.object({
     name: z.string(),
     domains: z.array(toolDomain).min(1),
-    level: z.number().int().min(0).max(10),
+    tier: z.number().int().min(1).max(3),
     desc: z.string(),
     verdict: z.string(),
     url: z.string(),
     linkLabel: z.string(),
-    order: z.number().default(0),
     challenges: z.array(z.object({
       name: z.string(),
       platform: z.enum(['THM', 'CD', 'own lab']),
+      difficulty: toolDifficulty,
       date: z.string(),
       url: z.string().url().optional()
     })).default([])

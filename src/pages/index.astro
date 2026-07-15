@@ -1,7 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ProficiencyBytes from '../components/ProficiencyBytes.astro';
 
 const articlesAll = (await getCollection('articles'))
   .filter((a) => !a.data.draft)
@@ -16,12 +15,22 @@ const notes = await Promise.all(
 );
 
 const toolsRaw = (await getCollection('tools'))
-  .sort((a, b) => a.data.order - b.data.order);
+  .sort((a, b) => b.data.tier - a.data.tier || b.data.challenges.length - a.data.challenges.length);
 
-function evidenceLine(challenges: { platform: string }[]): string {
-  const counts: Record<string, number> = {};
-  for (const c of challenges) counts[c.platform] = (counts[c.platform] ?? 0) + 1;
-  return Object.entries(counts).map(([p, n]) => `${n}× ${p}`).join(' · ');
+const TIER_LABEL: Record<number, string> = {
+  3: 'working proficiency',
+  2: 'hands-on, learning',
+  1: 'explored'
+};
+
+function evidenceLine(challenges: { difficulty: string }[]): string {
+  const n = challenges.length;
+  const hard = challenges.filter(c => c.difficulty === 'hard').length;
+  const med = challenges.filter(c => c.difficulty === 'medium').length;
+  let line = `${n} ${n === 1 ? 'lab' : 'labs'}`;
+  if (hard > 0) line += ` · ${hard} hard`;
+  else if (med > 0) line += ` · ${med} medium`;
+  return line;
 }
 
 const tools = toolsRaw.map(t => ({
@@ -115,7 +124,7 @@ function articleHref(slug: string) { return `/articles/${slug}`; }
   <section id="toolbox" class="container toolbox-section">
     <div class="section-head">
       <h2>TOOLBOX</h2>
-      <span class="meta">proficiency written in bytes — FF = solid, 00 = not yet</span>
+      <span class="meta">no self-scores — completed labs, difficulty rated by the platform</span>
     </div>
     {tools.length === 0 && (
       <p class="empty">&gt; toolbox is being assembled · no receipts posted yet_</p>
@@ -128,12 +137,19 @@ function articleHref(slug: string) { return `/articles/${slug}`; }
               <span class="tool-icon" aria-hidden="true">{t.data.name.charAt(0).toUpperCase()}</span>
               <a href={t.data.url} class="tool-name">{t.data.name}</a>
             </div>
-            <span class="tool-score">{t.data.level}/10</span>
+            <span class="tool-score">{t.evidence}</span>
           </div>
           <p class="tool-desc">{t.data.desc}</p>
-          <ProficiencyBytes level={t.data.level} />
+          <div class="tool-tier">
+            <span class="tier-segs" aria-hidden="true">
+              {[1, 2, 3].map(i => (
+                <span class={i <= t.data.tier ? `tseg on t${t.data.tier}` : 'tseg'}></span>
+              ))}
+            </span>
+            <span class={`tier-label t${t.data.tier}`}>{TIER_LABEL[t.data.tier]}</span>
+          </div>
           <div class="tool-row-bot">
-            <span>{t.evidence}</span>
+            <span></span>
             <a href={t.data.url} class="tool-get">get it →</a>
           </div>
         </div>
@@ -141,7 +157,7 @@ function articleHref(slug: string) { return `/articles/${slug}`; }
     </div>
     {tools.length > 0 && (
       <div class="toolbox-footnote">
-        <p>Scores are self-assessed and backed by the challenges listed — THM = TryHackMe, CD = CyberDefenders. I’d rather show a 4/10 with receipts than a 9/10 without.</p>
+        <p>No self-scores here — every level is backed by completed labs, and the difficulty ratings come from the platforms, not from me. I’d rather show receipts than numbers.</p>
         <a href="/toolbox">&gt; full toolbox with receipts →</a>
       </div>
     )}
@@ -357,11 +373,26 @@ function articleHref(slug: string) { return `/articles/${slug}`; }
   .tool-name:hover { color: var(--accent); }
   .tool-score {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 13px;
+    font-size: 11.5px;
     font-weight: 600;
-    color: var(--ink);
+    color: var(--faint);
     white-space: nowrap;
   }
+  .tool-tier { display: flex; align-items: center; gap: 9px; }
+  .tier-segs { display: flex; gap: 3px; }
+  .tseg { width: 17px; height: 6px; background: var(--offcell); }
+  .tseg.on.t3 { background: var(--accent); }
+  .tseg.on.t2 { background: var(--dim); }
+  .tseg.on.t1 { background: var(--faint); }
+  .tier-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .tier-label.t3 { color: var(--accent); }
+  .tier-label.t2 { color: var(--dim); }
+  .tier-label.t1 { color: var(--faint); }
   .tool-desc {
     margin: 0;
     font-size: 16px;

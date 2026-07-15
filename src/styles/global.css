@@ -20,6 +20,9 @@ html, body { margin: 0; padding: 0; background: var(--bg); }
   --sep: #D3D8D2;
   --offcell: #C5CBC5;
   --panel-dark: #161B18;
+  --hard: #0E7A4A;
+  --med: #6B7370;
+  --easy: #A6ADA7;
 }
 
 html[data-theme="dark"] {
@@ -41,6 +44,9 @@ html[data-theme="dark"] {
   --sep: #343C37;
   --offcell: #3B443E;
   --panel-dark: #0B0F0D;
+  --hard: #45A97A;
+  --med: #8D978F;
+  --easy: #5C665F;
 }
 
 body {

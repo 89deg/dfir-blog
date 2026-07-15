@@ -1,15 +1,13 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ProficiencyBytes from '../components/ProficiencyBytes.astro';
 
-const tools = (await getCollection('tools'))
-  .sort((a, b) => b.data.level - a.data.level);
-
+const toolsRaw = await getCollection('tools');
 const radar = (await getCollection('radar'))
   .sort((a, b) => a.data.order - b.data.order);
 
 type DomainId = 'android' | 'windows' | 'network' | 'memory';
+type Diff = 'easy' | 'medium' | 'hard' | 'lab' | 'in progress';
 
 const DOMAINS: { id: DomainId; label: string; blurb: string }[] = [
   { id: 'android', label: 'ANDROID', blurb: 'app data, artifacts, extractions' },
@@ -18,133 +16,173 @@ const DOMAINS: { id: DomainId; label: string; blurb: string }[] = [
   { id: 'memory',  label: 'MEMORY',  blurb: 'RAM captures, volatile evidence' }
 ];
 
+const TIER: Record<number, { label: string; cls: string }> = {
+  3: { label: 'WORKING PROFICIENCY', cls: 'tier-3' },
+  2: { label: 'HANDS-ON, LEARNING',  cls: 'tier-2' },
+  1: { label: 'EXPLORED',            cls: 'tier-1' }
+};
+
+const diffRank: Record<Diff, number> = { hard: 0, medium: 1, easy: 2, lab: 3, 'in progress': 4 };
+const RECEIPT_CAP = 3;
+
+// tools sorted by tier, then by amount of evidence
+const tools = toolsRaw.sort((a, b) =>
+  b.data.tier - a.data.tier || b.data.challenges.length - a.data.challenges.length
+);
+
+function countsLine(challenges: { difficulty: Diff }[]): string {
+  const n = challenges.length;
+  const hard = challenges.filter(c => c.difficulty === 'hard').length;
+  const med = challenges.filter(c => c.difficulty === 'medium').length;
+  let line = `${n} ${n === 1 ? 'lab' : 'labs'}`;
+  if (hard > 0) line += ` · ${hard} hard`;
+  else if (med > 0) line += ` · ${med} medium`;
+  return line;
+}
+
 const domainSections = DOMAINS.map((d, i) => {
   const dTools = tools.filter(t => t.data.domains.includes(d.id));
-  const avg = dTools.length ? dTools.reduce((s, t) => s + t.data.level, 0) / dTools.length : 0;
-  const agg = Math.round(avg * 10) / 10;
-  return {
-    ...d,
-    num: '0' + (i + 1),
-    tools: dTools,
-    avgLevel: Math.round(avg),
-    aggScore: agg.toFixed(1).replace(/\.0$/, ''),
-    formula: 'avg of ' + dTools.length + (dTools.length === 1 ? ' tool' : ' tools')
-  };
+  const labs = dTools.reduce((s, t) => s + t.data.challenges.length, 0);
+  const hard = dTools.reduce((s, t) => s + t.data.challenges.filter(c => c.difficulty === 'hard').length, 0);
+  let agg = `${labs} labs`;
+  if (hard > 0) agg += ` · ${hard} hard`;
+  agg += ` · ${dTools.length} ${dTools.length === 1 ? 'tool' : 'tools'}`;
+  return { ...d, num: '0' + (i + 1), tools: dTools, agg };
 }).filter(s => s.tools.length > 0);
 
 const FILTERS = [
-  { id: 'all', label: 'ALL' },
-  ...DOMAINS.map(d => ({ id: d.id, label: d.label }))
+  { id: 'all', label: 'ALL DOMAINS', count: tools.length },
+  ...DOMAINS.map(d => ({
+    id: d.id, label: d.label,
+    count: tools.filter(t => t.data.domains.includes(d.id)).length
+  }))
 ];
 
 const domainLabel: Record<DomainId, string> = Object.fromEntries(
   DOMAINS.map(d => [d.id, d.label])
 ) as Record<DomainId, string>;
+
+function sortedReceipts(challenges: { name: string; platform: string; difficulty: Diff; url?: string }[]) {
+  return [...challenges].sort((a, b) => diffRank[a.difficulty] - diffRank[b.difficulty]);
+}
+
+function receiptTitle(c: { name: string; platform: string; difficulty: Diff }): string {
+  const provider = c.platform === 'THM' ? 'TryHackMe' : c.platform === 'CD' ? 'CyberDefenders' : 'own lab';
+  return c.platform === 'own lab' ? `${c.name} — ${provider}` : `${c.name} — ${provider} (${c.difficulty})`;
+}
+
+function diffClass(d: Diff): string {
+  if (d === 'medium' || d === 'in progress' || d === 'lab') return 'd-med';
+  return `d-${d}`;
+}
 ---
 <BaseLayout title="Toolbox — dfir.89deg.com">
 
   <section class="page-head container">
     <p class="kicker">// TOOLBOX — BY DOMAIN</p>
     <h1>Screwdrivers, flux capacitors &amp; other precision instruments.</h1>
-    <p class="lede">The workbench, sorted by what I investigate — not just what I run. Each domain gets a score computed from its tools, and every score still comes with a receipt.</p>
+    <p class="lede">The workbench, sorted by what I investigate — not just what I run. Each tool carries an honest, job-anchored level and the completed labs behind it — difficulty rated by the platform, not by me. Click any receipt to check it.</p>
     <div class="legend">
-      <span><span class="lg on">FF</span> = solid</span>
-      <span><span class="lg off">00</span> = not yet</span>
-      <span>THM = TryHackMe</span>
-      <span>CD = CyberDefenders</span>
-      <span class="legend-tail">domain score = avg of its tools</span>
+      <span class="lg-label">LEVEL:</span>
+      <span><span class="lg seg-3">▮▮▮</span> working proficiency</span>
+      <span><span class="lg seg-2">▮▮</span> hands-on, learning</span>
+      <span><span class="lg seg-1">▮</span> explored</span>
+      <span class="lg-sep" aria-hidden="true"></span>
+      <span><span class="lg d-hard">hard</span> · <span class="lg d-med">medium</span> · <span class="lg d-easy">easy</span> · <span class="lg d-med">lab</span> = own case</span>
     </div>
   </section>
 
-  {tools.length > 0 && (
-    <section class="container filter-section" data-filter-root>
-      <div class="filter-bar">
-        <span class="label">FILTER:</span>
-        {FILTERS.map(f => (
-          <button
-            type="button"
-            class="filter-chip"
-            data-filter-tag={f.id}
-            aria-pressed={f.id === 'all' ? 'true' : 'false'}
-          >{f.label}</button>
-        ))}
-        <span class="count" data-filter-count data-total={tools.length}>{tools.length} of {tools.length} tools</span>
-      </div>
-    </section>
-  )}
+  <section class="container tabs-section">
+    <div class="tabs" role="tablist" aria-label="Filter by domain">
+      {FILTERS.map(f => (
+        <button
+          class={f.id === 'all' ? 'tab active' : 'tab'}
+          data-filter={f.id}
+        >{f.label} <span class="tab-count">({f.count})</span></button>
+      ))}
+    </div>
+  </section>
 
-  <section class="container domains">
-    {domainSections.length === 0 && (
-      <div class="empty-state">
-        <p class="empty-line">&gt; inventory is being written up · first tools land soon_</p>
-      </div>
-    )}
+  <section class="container inventory">
     {domainSections.map(sec => (
       <div class="domain" data-domain={sec.id}>
-        <div class="dom-head">
-          <div class="dom-title">
-            <span class="dom-num">{sec.num}</span>
+        <div class="domain-head">
+          <div class="domain-title">
+            <span class="domain-num">{sec.num}</span>
             <h2>{sec.label} FORENSICS</h2>
-            <span class="dom-blurb">{sec.blurb}</span>
+            <span class="domain-blurb">{sec.blurb}</span>
           </div>
-          <div class="dom-score">
-            <span class="score-label">DOMAIN SKILL</span>
-            <ProficiencyBytes level={sec.avgLevel} gap="6px" />
-            <span class="score-num">{sec.aggScore}/10</span>
-            <span class="score-formula">{sec.formula}</span>
+          <div class="domain-agg">
+            <span class="agg-label">DOMAIN EVIDENCE</span>
+            <span class="agg-value">{sec.agg}</span>
           </div>
         </div>
-        {sec.tools.map(t => (
-          <div class="tool-row" data-domains={t.data.domains.join(' ')}>
-            <div class="tool-info">
-              <a href={t.data.url} class="tool-name">{t.data.name}</a>
-              <p class="tool-desc">{t.data.desc}</p>
-              <a href={t.data.url} class="tool-link" target="_blank" rel="noopener">{t.data.linkLabel} →</a>
-              <div class="tool-tags">
-                {t.data.domains.map(d => (
-                  <button type="button" class="tag" data-goto={d} title="Show this domain">{domainLabel[d as DomainId]}</button>
-                ))}
+
+        {sec.tools.map(t => {
+          const receipts = sortedReceipts(t.data.challenges);
+          const extra = receipts.length - RECEIPT_CAP;
+          const tier = TIER[t.data.tier];
+          return (
+            <div class="tool-row">
+              <div class="tool-main">
+                <a href={t.data.url} target="_blank" rel="noopener" class="tool-name">{t.data.name}</a>
+                <p class="tool-desc">{t.data.desc}</p>
+                <p class="tool-verdict">“{t.data.verdict}”</p>
+                <a href={t.data.url} target="_blank" rel="noopener" class="tool-link">{t.data.linkLabel} →</a>
+                <div class="tool-tags">
+                  {t.data.domains.map(d => (
+                    <button class="tag" data-goto={d} title="Show this domain">{domainLabel[d as DomainId]}</button>
+                  ))}
+                </div>
+              </div>
+              <div class="tool-evidence">
+                <div class="evidence-head">
+                  <div class="tier">
+                    <span class="tier-segs" aria-hidden="true">
+                      {[1, 2, 3].map(i => (
+                        <span class={i <= t.data.tier ? `seg on ${tier.cls}` : 'seg'}></span>
+                      ))}
+                    </span>
+                    <span class={`tier-label ${tier.cls}`}>{tier.label}</span>
+                  </div>
+                  <span class="counts">{countsLine(t.data.challenges)}</span>
+                </div>
+                <div class="receipts">
+                  {receipts.map((c, i) => (
+                    <a
+                      href={c.url ?? '#'}
+                      target="_blank"
+                      rel="noopener"
+                      class={i >= RECEIPT_CAP ? 'receipt hidden-receipt' : 'receipt'}
+                      title={receiptTitle(c)}
+                    >
+                      <span class={`diff ${diffClass(c.difficulty)}`}>{c.difficulty === 'in progress' ? 'wip' : c.difficulty}</span>
+                      {c.name}
+                    </a>
+                  ))}
+                  {extra > 0 && (
+                    <button class="more" data-more={`+${extra} more`}>+{extra} more</button>
+                  )}
+                </div>
               </div>
             </div>
-            <div class="tool-score">
-              <span class="score-num">{t.data.level}/10</span>
-              <ProficiencyBytes level={t.data.level} />
-              <span class="score-verdict">{t.data.verdict}</span>
-            </div>
-            <div class="tool-receipts">
-              <span class="receipts-label">RECEIPTS</span>
-              {t.data.challenges.length === 0 && (
-                <span class="receipts-empty">— no receipts filed yet</span>
-              )}
-              {t.data.challenges.map(ch => (
-                <div class="receipt">
-                  <span class="check">✓</span>
-                  {ch.url ? (
-                    <a class="ch-name" href={ch.url} target="_blank" rel="noopener">{ch.name}</a>
-                  ) : (
-                    <span class="ch-name">{ch.name}</span>
-                  )}
-                  <span class="ch-meta">{ch.platform} · {ch.date}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     ))}
   </section>
 
   {radar.length > 0 && (
     <section class="container radar-section">
-      <div class="section-head">
+      <div class="radar-head">
         <h2>ON THE RADAR</h2>
-        <span class="meta">not started — still 00 00 00, and I know it</span>
+        <span class="radar-note">no receipts yet — and I’ll say so</span>
       </div>
       <div class="radar-grid">
         {radar.map(r => (
-          <div class="radar-chip">
-            <span class="rn">{r.data.name}</span>
-            <span class="rw">{r.data.why}</span>
+          <div class="radar-card">
+            <span class="radar-name">{r.data.name}</span>
+            <span class="radar-why">{r.data.why}</span>
           </div>
         ))}
       </div>
@@ -154,31 +192,31 @@ const domainLabel: Record<DomainId, string> = Object.fromEntries(
 </BaseLayout>
 
 <script>
-  const chips = document.querySelectorAll<HTMLButtonElement>('.filter-chip[data-filter-tag]');
+  // domain tab filter
+  const tabs = document.querySelectorAll<HTMLButtonElement>('.tab');
   const domains = document.querySelectorAll<HTMLElement>('.domain');
-  const countEl = document.querySelector<HTMLElement>('[data-filter-count]');
-  const total = Number(countEl?.dataset.total ?? 0);
-
-  function activate(id: string) {
-    chips.forEach(c => {
-      c.setAttribute('aria-pressed', c.dataset.filterTag === id ? 'true' : 'false');
-    });
-    // a tool can render in several domains — in "all" count unique tools, not rows
-    let visible = 0;
+  function applyFilter(id: string) {
+    tabs.forEach(t => t.classList.toggle('active', t.dataset.filter === id));
     domains.forEach(d => {
-      const show = id === 'all' || d.dataset.domain === id;
-      d.hidden = !show;
-      if (show && id !== 'all') visible += d.querySelectorAll('.tool-row').length;
+      d.style.display = id === 'all' || d.dataset.domain === id ? '' : 'none';
     });
-    if (id === 'all') visible = total;
-    if (countEl) countEl.textContent = `${visible} of ${total} tools`;
   }
-
-  chips.forEach(c => c.addEventListener('click', () => activate(c.dataset.filterTag || 'all')));
-  document.querySelectorAll<HTMLButtonElement>('.tag[data-goto]').forEach(tag => {
+  tabs.forEach(t => t.addEventListener('click', () => applyFilter(t.dataset.filter!)));
+  // domain tag chips jump to their domain filter
+  document.querySelectorAll<HTMLButtonElement>('.tag').forEach(tag => {
     tag.addEventListener('click', () => {
-      activate(tag.dataset.goto || 'all');
+      applyFilter(tag.dataset.goto!);
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+  // expand/collapse receipts beyond the cap
+  document.querySelectorAll<HTMLButtonElement>('.more').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const open = btn.classList.toggle('open');
+      btn.closest('.receipts')!.querySelectorAll('.hidden-receipt').forEach(r =>
+        r.classList.toggle('shown', open)
+      );
+      btn.textContent = open ? 'show less' : btn.dataset.more!;
     });
   });
 </script>
@@ -200,105 +238,115 @@ const domainLabel: Record<DomainId, string> = Object.fromEntries(
     line-height: 1.55;
     color: var(--dim);
     font-style: italic;
-    max-width: 58ch;
+    max-width: 60ch;
     text-wrap: pretty;
   }
+
+  /* legend */
   .legend {
     margin-top: 36px;
     border: 1px solid var(--hairline);
     background: var(--soft);
     padding: 16px 22px;
     display: flex;
-    gap: 28px;
+    gap: 12px 26px;
     flex-wrap: wrap;
+    align-items: center;
     font-family: 'IBM Plex Mono', monospace;
     font-size: 12px;
     color: var(--muted);
   }
   .lg { font-weight: 600; }
-  .lg.on { color: var(--accent); }
-  .lg.off { color: var(--offcell); }
-  .legend-tail { margin-left: auto; }
+  .lg-label { color: var(--faint); }
+  .lg-sep { width: 1px; height: 14px; background: var(--sep); }
+  .seg-3 { color: var(--accent); }
+  .seg-2 { color: var(--dim); }
+  .seg-1 { color: var(--faint); }
+  .d-hard { color: var(--hard); }
+  .d-med { color: var(--med); }
+  .d-easy { color: var(--easy); }
 
-  .filter-section { padding-top: 40px; }
-
-  /* first sub-heading lands 62px below the filter bar, same rhythm as field-notes (28+34) */
-  .domains { padding-top: 14px; padding-bottom: 0; }
-  .empty-state {
-    border-top: 1px solid var(--ink);
-    padding-top: 40px;
-    margin-top: 24px;
+  /* tabs */
+  .tabs-section { padding-top: 44px; }
+  .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 4px;
+    border-bottom: 1px solid var(--ink);
   }
-  .empty-line {
-    margin: 0;
+  .tab {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 13px;
-    color: var(--faint);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    background: transparent;
+    color: var(--muted);
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 10px 16px 9px 16px;
+    cursor: pointer;
   }
-  .domain { padding-top: 48px; }
-  .dom-head {
+  .tab:hover { color: var(--accent); }
+  .tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    background: var(--soft);
+  }
+  .tab-count { font-weight: 400; opacity: 0.65; }
+
+  /* domain sections */
+  .domain { padding-top: 52px; }
+  .domain-head {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    gap: 16px 40px;
+    gap: 12px 40px;
     align-items: end;
     border-bottom: 1px solid var(--ink);
     padding-bottom: 12px;
   }
-  .dom-title {
+  .domain-title {
     display: flex;
     align-items: baseline;
     gap: 16px;
     flex-wrap: wrap;
   }
-  .dom-num {
+  .domain-num {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 12px;
     font-weight: 600;
     color: var(--accent);
   }
-  .dom-title h2 {
+  .domain-title h2 {
     margin: 0;
     font-family: 'IBM Plex Mono', monospace;
     font-size: 13px;
     font-weight: 600;
     letter-spacing: 0.12em;
   }
-  .dom-blurb {
+  .domain-blurb {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 11px;
     color: var(--faint);
   }
-  .dom-score {
+  .domain-agg {
     display: flex;
     align-items: baseline;
-    gap: 12px;
+    gap: 10px;
     font-family: 'IBM Plex Mono', monospace;
-    flex-wrap: wrap;
   }
-  .dom-score .score-label {
-    font-size: 10.5px;
-    letter-spacing: 0.1em;
-    color: var(--faint);
-  }
-  .dom-score .score-num {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--ink);
-  }
-  .dom-score .score-formula {
-    font-size: 10.5px;
-    color: var(--faint);
-  }
+  .agg-label { font-size: 10.5px; letter-spacing: 0.1em; color: var(--faint); }
+  .agg-value { font-size: 13px; font-weight: 600; color: var(--ink); }
 
+  /* tool rows */
   .tool-row {
     display: grid;
-    grid-template-columns: minmax(0, 1.1fr) 220px minmax(0, 1fr);
-    gap: 40px;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    gap: 16px 40px;
     padding: 30px 0;
     border-bottom: 1px solid var(--hairline2);
     align-items: start;
   }
-  .tool-info { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .tool-main { display: flex; flex-direction: column; gap: 8px; }
   .tool-name {
     font-size: 26px;
     font-weight: 500;
@@ -314,6 +362,14 @@ const domainLabel: Record<DomainId, string> = Object.fromEntries(
     color: var(--dim);
     text-wrap: pretty;
   }
+  .tool-verdict {
+    margin: 0;
+    font-size: 14.5px;
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--muted);
+    text-wrap: pretty;
+  }
   .tool-link {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 11.5px;
@@ -322,12 +378,7 @@ const domainLabel: Record<DomainId, string> = Object.fromEntries(
     margin-top: 2px;
   }
   .tool-link:hover { text-decoration: underline; }
-  .tool-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 6px;
-  }
+  .tool-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
   .tag {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 10px;
@@ -338,83 +389,91 @@ const domainLabel: Record<DomainId, string> = Object.fromEntries(
     padding: 3px 8px;
     cursor: pointer;
   }
-  .tag:hover {
-    color: var(--accent);
-    border-color: var(--accent-bd);
-  }
+  .tag:hover { color: var(--accent); border-color: var(--accent-bd); }
 
-  .tool-score { display: flex; flex-direction: column; gap: 10px; padding-top: 6px; }
-  .tool-score .score-num {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--ink);
+  /* evidence column */
+  .tool-evidence { display: flex; flex-direction: column; gap: 12px; padding-top: 4px; }
+  .evidence-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
   }
-  .score-verdict {
+  .tier { display: flex; align-items: center; gap: 9px; }
+  .tier-segs { display: flex; gap: 3px; }
+  .seg { width: 17px; height: 6px; background: var(--offcell); }
+  .seg.on.tier-3 { background: var(--accent); }
+  .seg.on.tier-2 { background: var(--dim); }
+  .seg.on.tier-1 { background: var(--faint); }
+  .tier-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .tier-label.tier-3 { color: var(--accent); }
+  .tier-label.tier-2 { color: var(--dim); }
+  .tier-label.tier-1 { color: var(--faint); }
+  .counts {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 11px;
     color: var(--faint);
+    white-space: nowrap;
   }
 
-  .tool-receipts {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    padding-top: 6px;
-  }
-  .receipts-label {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 10.5px;
-    letter-spacing: 0.1em;
-    color: var(--faint);
-    padding-bottom: 8px;
-  }
-  .receipts-empty {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
-    color: var(--faint);
-  }
+  /* receipts */
+  .receipts { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
   .receipt {
-    display: flex;
+    display: inline-flex;
     align-items: baseline;
-    gap: 10px;
+    gap: 7px;
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 12.5px;
-    padding: 5px 0;
-    border-bottom: 1px dotted var(--hairline);
+    font-size: 11.5px;
+    color: var(--body);
+    background: var(--soft);
+    border: 1px solid var(--hairline);
+    padding: 4px 9px;
+    text-decoration: none;
   }
-  .check { color: var(--accent); }
-  .ch-name { color: var(--body); text-decoration: none; }
-  a.ch-name:hover { color: var(--accent); }
-  .ch-meta { margin-left: auto; color: var(--faint); white-space: nowrap; }
+  .receipt:hover { border-color: var(--accent-bd); color: var(--accent); }
+  .receipt .diff { font-weight: 600; letter-spacing: 0.04em; }
+  .hidden-receipt { display: none; }
+  .hidden-receipt.shown { display: inline-flex; }
+  .more {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--accent);
+    background: transparent;
+    border: none;
+    padding: 4px 4px;
+    cursor: pointer;
+  }
+  .more:hover { text-decoration: underline; }
 
+  /* radar */
   .radar-section { padding-top: 64px; padding-bottom: 84px; }
-  .section-head {
+  .radar-head {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
     border-bottom: 1px solid var(--ink);
     padding-bottom: 12px;
   }
-  .section-head h2 {
+  .radar-head h2 {
     margin: 0;
     font-size: 15px;
     font-weight: 600;
     font-family: 'IBM Plex Mono', monospace;
     letter-spacing: 0.1em;
   }
-  .section-head .meta {
+  .radar-note {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 12px;
     color: var(--faint);
   }
-  .radar-grid {
-    display: flex;
-    gap: 14px;
-    flex-wrap: wrap;
-    padding-top: 22px;
-  }
-  .radar-chip {
+  .radar-grid { display: flex; gap: 14px; flex-wrap: wrap; padding-top: 22px; }
+  .radar-card {
     border: 1px solid var(--hairline);
     background: var(--card);
     padding: 14px 18px;
@@ -422,17 +481,14 @@ const domainLabel: Record<DomainId, string> = Object.fromEntries(
     flex-direction: column;
     gap: 5px;
   }
-  .rn { font-size: 18px; font-weight: 500; }
-  .rw {
+  .radar-name { font-size: 18px; font-weight: 500; }
+  .radar-why {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 11px;
     color: var(--faint);
   }
 
   @media (max-width: 760px) {
-    .tool-row { grid-template-columns: 1fr; gap: 24px; }
-    .dom-head { grid-template-columns: 1fr; gap: 14px; }
-    .legend { flex-direction: column; gap: 8px; }
-    .legend-tail { margin-left: 0; }
+    .domain-head, .tool-row { grid-template-columns: 1fr; gap: 16px; }
   }
 </style>
