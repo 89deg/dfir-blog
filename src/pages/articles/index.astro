@@ -5,7 +5,10 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 const all = (await getCollection('articles'))
   .sort((a, b) => b.data.date.localeCompare(a.data.date));
 
-const TAGS = ['ALL', 'NETWORK', 'CRYPTO', 'DISK', 'MOBILE'];
+// only offer filters that actually have articles behind them
+const TAG_ORDER = ['NETWORK', 'CRYPTO', 'DISK', 'MOBILE', 'MEMORY'];
+const usedTags = new Set<string>(all.map(a => a.data.tag));
+const TAGS = ['ALL', ...TAG_ORDER.filter(t => usedTags.has(t))];
 
 function minutesLabel(m: string | number) {
   return typeof m === 'number' ? `${m} MIN` : m;

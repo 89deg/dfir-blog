@@ -7,9 +7,10 @@ const articlesAll = (await getCollection('articles'))
   .sort((a, b) => b.data.date.localeCompare(a.data.date));
 const articles = articlesAll.slice(0, 3);
 
+// dashboard shows only the latest field note — the archive has the rest
 const notesRaw = (await getCollection('notes'))
   .sort((a, b) => b.data.date.localeCompare(a.data.date))
-  .slice(0, 3);
+  .slice(0, 1);
 const notes = await Promise.all(
   notesRaw.map(async (n) => ({ entry: n, Content: (await n.render()).Content }))
 );
