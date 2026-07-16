@@ -31,7 +31,10 @@ const groups = Array.from(groupsMap.entries()).map(([label, items]) => ({
   items
 }));
 
-const TAGS = ['ALL', 'THM', 'LAB', 'LEARNING', 'MILESTONE'];
+// only offer filters that actually have notes behind them
+const TAG_ORDER = ['THM', 'LAB', 'LEARNING', 'MILESTONE'];
+const usedTags = new Set<string>(notesRaw.map(n => n.data.tag));
+const TAGS = ['ALL', ...TAG_ORDER.filter(t => usedTags.has(t))];
 
 // Oldest entry (list is sorted desc) — keeps the archive tail line accurate automatically.
 const logStart = notesRaw.length > 0 ? notesRaw[notesRaw.length - 1].data.date : null;
