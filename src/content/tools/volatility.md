@@ -7,6 +7,11 @@ verdict: "my go-to for RAM — plugin selection and process/DLL analysis feel na
 url: "https://github.com/volatilityfoundation/volatility3"
 linkLabel: "github.com/volatilityfoundation · open source"
 challenges:
+  - name: "NintendoHunt"
+    platform: CD
+    difficulty: hard
+    date: "2026-07"
+    url: "https://cyberdefenders.org/blueteam-ctf-challenges/achievements/nils.hillmann/nintendohunt/"
   - name: "Volatility"
     platform: THM
     difficulty: medium
