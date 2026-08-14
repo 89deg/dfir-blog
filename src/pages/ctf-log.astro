@@ -21,8 +21,6 @@ type LogEntry = {
   url?: string;       // omitted for rooms with no receipt to link
   wip?: boolean;      // still in progress
   progress?: string;  // e.g. '7/22' flags
-  // difficulty not yet verified against the platform (my best guess)
-  unverified?: boolean;
 };
 
 // ── The log. Single source of truth for this page. ────────────────────────
@@ -45,23 +43,23 @@ const LOG: LogEntry[] = [
   { date: '2026-07-11', name: 'HawkEye',          platform: 'CD', difficulty: 'medium', tools: ['Wireshark'], url: 'https://cyberdefenders.org/blueteam-ctf-challenges/achievements/nils.hillmann/hawkeye/' },
 
   // ── TryHackMe (all July 2026, in the order I did them) ──
-  { date: '2026-07', seq: 17, name: 'Hashing — Crypto 101',          platform: 'THM', difficulty: 'easy',   topic: 'crypto',   unverified: true },
-  { date: '2026-07', seq: 16, name: 'Encryption — Crypto 101',       platform: 'THM', difficulty: 'medium', topic: 'crypto',   unverified: true },
-  { date: '2026-07', seq: 15, name: 'iOS Forensics',                 platform: 'THM', difficulty: 'medium', topic: 'iOS',      unverified: true },
+  { date: '2026-07', seq: 17, name: 'Hashing — Crypto 101',          platform: 'THM', difficulty: 'medium', topic: 'crypto',   url: 'https://tryhackme.com/room/hashingcrypto101' },
+  { date: '2026-07', seq: 16, name: 'Encryption — Crypto 101',       platform: 'THM', difficulty: 'medium', topic: 'crypto',   url: 'https://tryhackme.com/room/encryptioncrypto101' },
+  { date: '2026-07', seq: 15, name: 'iOS Forensics',                 platform: 'THM', difficulty: 'easy',   topic: 'iOS',      url: 'https://tryhackme.com/room/iosforensics' },
   { date: '2026-07', seq: 14, name: 'Android Analysis',              platform: 'THM', difficulty: 'easy',   tools: ['ALEAPP'], url: 'https://tryhackme.com/room/androidanalysis' },
-  { date: '2026-07', seq: 13, name: 'Intro to Malware Analysis',     platform: 'THM', difficulty: 'easy',   topic: 'malware',  unverified: true },
+  { date: '2026-07', seq: 13, name: 'Intro to Malware Analysis',     platform: 'THM', difficulty: 'medium', topic: 'malware',  url: 'https://tryhackme.com/room/intromalwareanalysis' },
   { date: '2026-07', seq: 12, name: 'Wireshark: Traffic Analysis',   platform: 'THM', difficulty: 'medium', tools: ['Wireshark'], url: 'https://tryhackme.com/guest-share/621b07bd5514ea80ec3b5d17e436a33341133315' },
   { date: '2026-07', seq: 11, name: 'Wireshark: Packet Operations',  platform: 'THM', difficulty: 'easy',   tools: ['Wireshark'], url: 'https://tryhackme.com/room/wiresharkpacketoperations' },
   { date: '2026-07', seq: 10, name: 'Wireshark: The Basics',         platform: 'THM', difficulty: 'easy',   tools: ['Wireshark'], url: 'https://tryhackme.com/room/wiresharkthebasics' },
   { date: '2026-07', seq: 9,  name: 'Memory Forensics',              platform: 'THM', difficulty: 'easy',   tools: ['Volatility'], url: 'https://tryhackme.com/room/memoryforensics' },
   { date: '2026-07', seq: 8,  name: 'Volatility',                    platform: 'THM', difficulty: 'medium', tools: ['Volatility'], url: 'https://tryhackme.com/guest-share/f112c681f00289fda4559ef93638e723b56de0ef' },
-  { date: '2026-07', seq: 7,  name: 'Linux Forensics',               platform: 'THM', difficulty: 'medium', topic: 'Linux',    unverified: true },
+  { date: '2026-07', seq: 7,  name: 'Linux Forensics',               platform: 'THM', difficulty: 'medium', topic: 'Linux',    url: 'https://tryhackme.com/room/linuxforensics' },
   { date: '2026-07', seq: 6,  name: 'KAPE',                          platform: 'THM', difficulty: 'medium', tools: ['KAPE'], url: 'https://tryhackme.com/room/kape' },
   { date: '2026-07', seq: 5,  name: 'Windows Forensics 2',           platform: 'THM', difficulty: 'medium', tools: ['Eric Zimmerman Tools'], url: 'https://tryhackme.com/room/windowsforensics2' },
   { date: '2026-07', seq: 4,  name: 'Windows Forensics 1',           platform: 'THM', difficulty: 'medium', tools: ['Eric Zimmerman Tools'], url: 'https://tryhackme.com/room/windowsforensics1' },
   { date: '2026-07', seq: 3,  name: 'Disk Analysis & Autopsy',       platform: 'THM', difficulty: 'medium', tools: ['Autopsy'], url: 'https://tryhackme.com/room/autopsy2ze0' },
   { date: '2026-07', seq: 2,  name: 'Autopsy',                       platform: 'THM', difficulty: 'easy',   tools: ['Autopsy'], url: 'https://tryhackme.com/room/btautopsye0' },
-  { date: '2026-07', seq: 1,  name: 'Digital Forensics Fundamentals',platform: 'THM', difficulty: 'easy',   topic: 'intro',    unverified: true }
+  { date: '2026-07', seq: 1,  name: 'Digital Forensics Fundamentals',platform: 'THM', difficulty: 'easy',   topic: 'intro',    url: 'https://tryhackme.com/room/digitalforensicsfundamentals' }
 ];
 
 // Newest first. Same date → higher seq first, then name.
@@ -115,8 +113,8 @@ const FILTERS = [
 
   <section class="page-head container">
     <p class="kicker">// CTF LOG — CHRONOLOGICAL</p>
-    <h1>Every flag, in the order I caught it.</h1>
-    <p class="lede">The Toolbox slices this by tool. This is the plain running list — newest first, each mapped tool linked to its receipt. One row, one challenge.</p>
+    <h1>Where do I put the flag…? Oh, found it!</h1>
+    <p class="lede">From zero to one — my golden path into forensics. Every room and challenge I've cleared, newest first, each linked back to the platform.</p>
 
     <div class="stats">
       {stats.map(s => (
@@ -164,7 +162,7 @@ const FILTERS = [
         );
       })}
     </div>
-    <p class="tail">Difficulty as rated by the platform, not by me. Rows that map to a tool link straight to the room or challenge — verify any of them. Rooms with no linked receipt were still done; they just don't hang off a single tool.</p>
+    <p class="tail">Difficulty as rated by the platform, not by me. Rows link straight to the room or challenge — verify any of them. The one still in progress is marked; the rest are cleared.</p>
   </section>
 
 </BaseLayout>
@@ -193,18 +191,19 @@ const FILTERS = [
   /* stats */
   .stats {
     margin-top: 40px;
-    border-top: 1px solid var(--ink);
-    border-bottom: 1px solid var(--hairline);
     display: grid;
     grid-template-columns: repeat(4, 1fr);
+    border: 1px solid var(--hairline);
+    background: var(--soft);
   }
   .stat {
-    padding: 22px 24px 22px 0;
+    padding: 20px 24px;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 7px;
     border-right: 1px solid var(--hairline);
   }
+  .stat:last-child { border-right: none; }
   .stat-n {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 32px;
@@ -314,6 +313,8 @@ const FILTERS = [
 
   @media (max-width: 760px) {
     .stats { grid-template-columns: 1fr 1fr; }
+    .stat:nth-child(2n) { border-right: none; }
+    .stat:nth-child(-n+2) { border-bottom: 1px solid var(--hairline); }
     .row {
       grid-template-columns: auto 1fr;
       gap: 4px 14px;
