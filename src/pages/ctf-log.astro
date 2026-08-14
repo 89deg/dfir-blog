@@ -1,90 +1,109 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-type Diff = 'easy' | 'medium' | 'hard' | 'lab' | 'in progress';
-type Platform = 'THM' | 'CD' | 'own lab';
+type Diff = 'easy' | 'medium' | 'hard';
+type Platform = 'THM' | 'CD';
 
-// Single source of truth: the same challenge receipts the Toolbox slices by
-// tool. Here they're flattened into one running list. A challenge solved with
-// several tools shows up once, with every tool it touched.
-const toolsRaw = await getCollection('tools');
-
-type Row = {
-  date: string;          // ISO YYYY-MM — used for sorting
+type LogEntry = {
+  // Sort key. Full 'YYYY-MM-DD' where I have the exact completion date
+  // (CyberDefenders shows it), or 'YYYY-MM' where I only know the month.
+  // A month-only key sorts *before* any dated day in the same month, so the
+  // TryHackMe rooms cluster at the bottom of July — the foundation I did first.
+  date: string;
+  // Tiebreaker for entries that share a date. Higher = later / newer.
+  // Used to keep the TryHackMe learning path in the order I actually walked it.
+  seq?: number;
   name: string;
   platform: Platform;
   difficulty: Diff;
-  url?: string;
-  tools: Set<string>;
+  tools?: string[];   // linked tools this challenge exercised
+  topic?: string;     // shown instead of a tool for rooms that map to none
+  url?: string;       // omitted for rooms with no receipt to link
+  wip?: boolean;      // still in progress
+  progress?: string;  // e.g. '7/22' flags
+  // difficulty not yet verified against the platform (my best guess)
+  unverified?: boolean;
 };
 
-const byChallenge = new Map<string, Row>();
-for (const t of toolsRaw) {
-  for (const c of t.data.challenges) {
-    const key = `${c.name}|${c.platform}`;
-    const existing = byChallenge.get(key);
-    if (existing) {
-      existing.tools.add(t.data.name);
-      // keep the earliest recorded date if they ever diverge
-      if (c.date < existing.date) existing.date = c.date;
-    } else {
-      byChallenge.set(key, {
-        date: c.date,
-        name: c.name,
-        platform: c.platform,
-        difficulty: c.difficulty,
-        url: c.url,
-        tools: new Set([t.data.name])
-      });
-    }
-  }
-}
+// ── The log. Single source of truth for this page. ────────────────────────
+// TryHackMe rooms were all July 2026 (quick foundation run) — kept in the
+// order I did them via `seq`. CyberDefenders dates are the real completion
+// dates off my profile. Recruiter — Hanoi Op is still open (7/22).
+const LOG: LogEntry[] = [
+  // ── currently working on ──
+  { date: '2026-08', name: 'Recruiter — Hanoi Op', platform: 'CD', difficulty: 'hard', topic: 'endpoint', wip: true, progress: '7/22' },
 
-// Newest first. Within the same month, alphabetical by challenge name —
-// month granularity can't order same-month solves, so we fix a stable rule.
-const rows = Array.from(byChallenge.values()).sort(
-  (a, b) => b.date.localeCompare(a.date) || a.name.localeCompare(b.name)
+  // ── CyberDefenders (real completion dates) ──
+  { date: '2026-07-29', name: 'SpottedInTheWild', platform: 'CD', difficulty: 'hard',   tools: ['KAPE', 'Eric Zimmerman Tools'], url: 'https://cyberdefenders.org/blueteam-ctf-challenges/achievements/nils.hillmann/spottedinthewild/' },
+  { date: '2026-07-17', name: 'NintendoHunt',     platform: 'CD', difficulty: 'hard',   tools: ['Volatility'], url: 'https://cyberdefenders.org/blueteam-ctf-challenges/achievements/nils.hillmann/nintendohunt/' },
+  { date: '2026-07-13', name: 'BlackEnergy',      platform: 'CD', difficulty: 'medium', tools: ['Volatility'], url: 'https://cyberdefenders.org/blueteam-ctf-challenges/achievements/nils.hillmann/blackenergy/' },
+  { date: '2026-07-13', name: 'Brave',            platform: 'CD', difficulty: 'medium', tools: ['Volatility'], url: 'https://cyberdefenders.org/blueteam-ctf-challenges/achievements/nils.hillmann/brave/' },
+  { date: '2026-07-10', name: 'LGDroid',          platform: 'CD', difficulty: 'medium', tools: ['SQLite / DB Browser'], url: 'https://cyberdefenders.org/blueteam-ctf-challenges/achievements/nils.hillmann/lgdroid/' },
+  { date: '2026-07-09', name: 'AndroidBreach',    platform: 'CD', difficulty: 'medium', tools: ['ALEAPP', 'JADX', 'SQLite / DB Browser'], url: 'https://cyberdefenders.org/blueteam-ctf-challenges/achievements/nils.hillmann/androidbreach/' },
+  { date: '2026-07-03', name: 'The Crime',        platform: 'CD', difficulty: 'easy',   tools: ['ALEAPP', 'SQLite / DB Browser'], url: 'https://cyberdefenders.org/blueteam-ctf-challenges/achievements/nils.hillmann/the-crime/' },
+  { date: '2026-06-16', name: 'Insider',          platform: 'CD', difficulty: 'easy',   tools: ['FTK Imager'], url: 'https://cyberdefenders.org/blueteam-ctf-challenges/achievements/nils.hillmann/insider/' },
+  { date: '2026-06-11', name: 'HawkEye',          platform: 'CD', difficulty: 'medium', tools: ['Wireshark'], url: 'https://cyberdefenders.org/blueteam-ctf-challenges/achievements/nils.hillmann/hawkeye/' },
+
+  // ── TryHackMe (all July 2026, in the order I did them) ──
+  { date: '2026-07', seq: 17, name: 'Hashing — Crypto 101',          platform: 'THM', difficulty: 'easy',   topic: 'crypto',   unverified: true },
+  { date: '2026-07', seq: 16, name: 'Encryption — Crypto 101',       platform: 'THM', difficulty: 'medium', topic: 'crypto',   unverified: true },
+  { date: '2026-07', seq: 15, name: 'iOS Forensics',                 platform: 'THM', difficulty: 'medium', topic: 'iOS',      unverified: true },
+  { date: '2026-07', seq: 14, name: 'Android Analysis',              platform: 'THM', difficulty: 'easy',   tools: ['ALEAPP'], url: 'https://tryhackme.com/room/androidanalysis' },
+  { date: '2026-07', seq: 13, name: 'Intro to Malware Analysis',     platform: 'THM', difficulty: 'easy',   topic: 'malware',  unverified: true },
+  { date: '2026-07', seq: 12, name: 'Wireshark: Traffic Analysis',   platform: 'THM', difficulty: 'medium', tools: ['Wireshark'], url: 'https://tryhackme.com/guest-share/621b07bd5514ea80ec3b5d17e436a33341133315' },
+  { date: '2026-07', seq: 11, name: 'Wireshark: Packet Operations',  platform: 'THM', difficulty: 'easy',   tools: ['Wireshark'], url: 'https://tryhackme.com/room/wiresharkpacketoperations' },
+  { date: '2026-07', seq: 10, name: 'Wireshark: The Basics',         platform: 'THM', difficulty: 'easy',   tools: ['Wireshark'], url: 'https://tryhackme.com/room/wiresharkthebasics' },
+  { date: '2026-07', seq: 9,  name: 'Memory Forensics',              platform: 'THM', difficulty: 'easy',   tools: ['Volatility'], url: 'https://tryhackme.com/room/memoryforensics' },
+  { date: '2026-07', seq: 8,  name: 'Volatility',                    platform: 'THM', difficulty: 'medium', tools: ['Volatility'], url: 'https://tryhackme.com/guest-share/f112c681f00289fda4559ef93638e723b56de0ef' },
+  { date: '2026-07', seq: 7,  name: 'Linux Forensics',               platform: 'THM', difficulty: 'medium', topic: 'Linux',    unverified: true },
+  { date: '2026-07', seq: 6,  name: 'KAPE',                          platform: 'THM', difficulty: 'medium', tools: ['KAPE'], url: 'https://tryhackme.com/room/kape' },
+  { date: '2026-07', seq: 5,  name: 'Windows Forensics 2',           platform: 'THM', difficulty: 'medium', tools: ['Eric Zimmerman Tools'], url: 'https://tryhackme.com/room/windowsforensics2' },
+  { date: '2026-07', seq: 4,  name: 'Windows Forensics 1',           platform: 'THM', difficulty: 'medium', tools: ['Eric Zimmerman Tools'], url: 'https://tryhackme.com/room/windowsforensics1' },
+  { date: '2026-07', seq: 3,  name: 'Disk Analysis & Autopsy',       platform: 'THM', difficulty: 'medium', tools: ['Autopsy'], url: 'https://tryhackme.com/room/autopsy2ze0' },
+  { date: '2026-07', seq: 2,  name: 'Autopsy',                       platform: 'THM', difficulty: 'easy',   tools: ['Autopsy'], url: 'https://tryhackme.com/room/btautopsye0' },
+  { date: '2026-07', seq: 1,  name: 'Digital Forensics Fundamentals',platform: 'THM', difficulty: 'easy',   topic: 'intro',    unverified: true }
+];
+
+// Newest first. Same date → higher seq first, then name.
+const rows = [...LOG].sort((a, b) =>
+  b.date.localeCompare(a.date) || (b.seq ?? 0) - (a.seq ?? 0) || a.name.localeCompare(b.name)
 );
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
                 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-function monthLabel(iso: string): string {
-  const [y, m] = iso.split('-');
+function monthLabel(date: string): string {
+  const [y, m] = date.split('-');
   return `${MONTHS[parseInt(m, 10) - 1]} ${y}`;
 }
 
 const providerName: Record<Platform, string> = {
   THM: 'TryHackMe',
-  CD: 'CyberDefenders',
-  'own lab': 'own lab'
+  CD: 'CyberDefenders'
 };
 function diffClass(d: Diff): string {
-  if (d === 'hard') return 'd-hard';
-  if (d === 'easy') return 'd-easy';
-  return 'd-med'; // medium, lab, in progress
+  return d === 'hard' ? 'd-hard' : d === 'easy' ? 'd-easy' : 'd-med';
 }
-function diffLabel(d: Diff): string {
-  return d === 'in progress' ? 'wip' : d;
+function toolCell(r: LogEntry): string {
+  return r.tools?.join(' · ') ?? r.topic ?? '—';
 }
 
-// Stats over the full log.
-const total = rows.length;
-const hard = rows.filter(r => r.difficulty === 'hard').length;
-const toolsExercised = new Set(rows.flatMap(r => Array.from(r.tools))).size;
-const platforms = new Set(rows.map(r => r.platform)).size;
+// Stats over completed challenges (the in-progress one doesn't count as solved).
+const done = LOG.filter(r => !r.wip);
+const hard = done.filter(r => r.difficulty === 'hard').length;
+const toolsExercised = new Set(LOG.flatMap(r => r.tools ?? [])).size;
+const platforms = new Set(LOG.map(r => r.platform)).size;
 const stats = [
-  { n: total,          label: 'CHALLENGES' },
-  { n: hard,           label: 'RATED HARD' },
+  { n: done.length,     label: 'SOLVED' },
+  { n: hard,            label: 'RATED HARD' },
   { n: toolsExercised, label: 'TOOLS EXERCISED' },
   { n: platforms,      label: 'PLATFORMS' }
 ];
 
-// Difficulty filters — only offer ones that have rows behind them.
+// Difficulty filters — only offer ones with rows behind them.
 const DIFF_ORDER: Diff[] = ['hard', 'medium', 'easy'];
 const usedDiffs = new Set(rows.map(r => r.difficulty));
 const FILTERS = [
-  { id: 'all', label: 'ALL', count: total },
+  { id: 'all', label: 'ALL', count: rows.length },
   ...DIFF_ORDER.filter(d => usedDiffs.has(d)).map(d => ({
     id: d,
     label: d.toUpperCase(),
@@ -97,9 +116,9 @@ const FILTERS = [
   <section class="page-head container">
     <p class="kicker">// CTF LOG — CHRONOLOGICAL</p>
     <h1>Every flag, in the order I caught it.</h1>
-    <p class="lede">The Toolbox slices this by tool. This is the plain running list — newest first, each row linked to the platform. One row, one solved challenge.</p>
+    <p class="lede">The Toolbox slices this by tool. This is the plain running list — newest first, each mapped tool linked to its receipt. One row, one challenge.</p>
 
-    <div data-mq="stats" class="stats">
+    <div class="stats">
       {stats.map(s => (
         <div class="stat">
           <span class="stat-n">{s.n}</span>
@@ -124,23 +143,28 @@ const FILTERS = [
 
   <section class="container log-section">
     <div class="log">
-      {rows.map(r => (
-        <a
-          href={r.url ?? '#'}
-          target="_blank"
-          rel="noopener"
-          class="row"
-          data-diff={r.difficulty}
-        >
-          <span class="r-date">{monthLabel(r.date)}</span>
-          <span class="r-name">{r.name}</span>
-          <span class="r-provider">{providerName[r.platform]}</span>
-          <span class="r-tool">{Array.from(r.tools).join(' · ')}</span>
-          <span class={`r-diff ${diffClass(r.difficulty)}`}>{diffLabel(r.difficulty)}</span>
-        </a>
-      ))}
+      {rows.map(r => {
+        const cls = `row${r.wip ? ' row-wip' : ''}`;
+        const inner = (
+          <>
+            <span class="r-date">{monthLabel(r.date)}</span>
+            <span class="r-name">
+              {r.name}
+              {r.wip && <span class="wip-tag">IN PROGRESS · {r.progress}</span>}
+            </span>
+            <span class="r-provider">{providerName[r.platform]}</span>
+            <span class="r-tool">{toolCell(r)}</span>
+            <span class={`r-diff ${diffClass(r.difficulty)}`}>{r.difficulty}</span>
+          </>
+        );
+        return r.url ? (
+          <a href={r.url} target="_blank" rel="noopener" class={cls} data-diff={r.difficulty}>{inner}</a>
+        ) : (
+          <div class={cls} data-diff={r.difficulty}>{inner}</div>
+        );
+      })}
     </div>
-    <p class="tail">Difficulty as rated by the platform, not by me. Rows link straight to the room or challenge — verify any of them.</p>
+    <p class="tail">Difficulty as rated by the platform, not by me. Rows that map to a tool link straight to the room or challenge — verify any of them. Rooms with no linked receipt were still done; they just don't hang off a single tool.</p>
   </section>
 
 </BaseLayout>
@@ -233,7 +257,8 @@ const FILTERS = [
     text-decoration: none;
     color: inherit;
   }
-  .row:hover { background: var(--hover); }
+  a.row:hover { background: var(--hover); }
+  .row-wip { background: var(--soft); }
   .r-date {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 12.5px;
@@ -245,6 +270,17 @@ const FILTERS = [
     font-weight: 500;
     color: var(--ink);
     line-height: 1.25;
+  }
+  .wip-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    border: 1px solid var(--accent-bd);
+    padding: 2px 6px;
+    margin-left: 10px;
+    white-space: nowrap;
   }
   .r-provider {
     font-family: 'IBM Plex Mono', monospace;
@@ -273,7 +309,7 @@ const FILTERS = [
     font-size: 11.5px;
     line-height: 1.7;
     color: var(--faint);
-    max-width: 60ch;
+    max-width: 64ch;
   }
 
   @media (max-width: 760px) {
