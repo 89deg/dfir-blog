@@ -7,6 +7,11 @@ verdict: "carried a full hard-rated disk investigation with Registry Explorer, M
 url: "https://ericzimmerman.github.io/"
 linkLabel: "ericzimmerman.github.io · free"
 challenges:
+  - name: "Recruiter — Hanoi Op"
+    platform: CD
+    difficulty: hard
+    date: "2026-08"
+    url: "https://cyberdefenders.org/blueteam-ctf-challenges/achievements/nils.hillmann/recruiter-hanoi-op/"
   - name: "SpottedInTheWild"
     platform: CD
     difficulty: hard
